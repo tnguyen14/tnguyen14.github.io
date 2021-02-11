@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript">
+		WebFontConfig = {
+			google: { families: [ 'Source+Code+Pro::latin', 'Source+Sans+Pro:400,400italic:latin', 'Merriweather:400,700:latin' ] }
+		};
+		(function() {
+			var wf = document.createElement('script');
+			wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+				'://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+			wf.type = 'text/javascript';
+			wf.async = 'true';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(wf, s);
+		})();
+	</script>
+	<title>Articles | Tri Nguyen</title>
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+	<div class="main-header">
+		<nav class="main-nav" role="navigation">
+			<ul class="main-menu">
+				<li><a href="https://tridnguyen.com"><i class="fa fa-home"></i>Home</a></li>
+			</ul><!-- .main-menu -->
+		</nav><!-- .main-nav -->
+		<div class="about">
+			<img class="personal" alt="Tri wearing headphones focusing on work" title="Tri Nguyen" src="/images/at_upstatement.jpg"/>
+			<h1 class="site-title">Tri Nguyen</h1>
+			<h2 class="site-tagline">Strongly opinionated, but what do I know?</h2>
+		</div><!-- .about -->
+	</div><!-- .main-header -->
+	<section class="main-content">
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/restful-wordpress">RESTful WordPress</a></h2>
+					<div class="article-date">03-28-2013</div>
+			<p>WordPress is an incredibly powerful and user-friendly web platform. It is loved by both developers and users alike. WordPress&#x2019;s polished <code>wp-admin</code> and Dashboard are probably one of the biggest reasons WordPress is chosen by many people as their go-to CMS. As a developer, I pick WordPress over other CMSes whenever I feel my client need a friendly CMS to manage their rich content in a smart and usable way, which turns out to be quite often.</p>
+			<p>In the State of the Word speech in 2012, Matt Mullenweg outlined a vision for WordPress with an even bigger emphasis on making <code>wp-admin</code> more user-friendly. I think this is a great direction to follow, given how User Experience has become the focal point in web development work in the past couple of years. In the same talk, Matt also shared his vision for WordPress being used more for web applications. Now this really got me off my seat.</p>
+			<p>Imagine a day when you are able to query every single bit of information that is on your WordPress site, from each Custom Post Type (CPT) and its custom meta fields to every user meta data. This will transform WordPress into a true web application powerhouse, with RESTful APIs on the back end and a stellar front end interface. The introduction of the REST API in JetPack 1.9 is a big step in that direction. However, there&#x2019;s still much to be done.</p>
+			<p>A few months ago, I started working on a mobile application with a few friends. We wanted to make a <a href="http://appstore.com/cowduck">nice tool</a> for students to create meaningful interactions through a small on-campus social network. During the architectural design process, being a true WordPress developer, I urged the group to use WordPress as our backend. I was very optimistic that we could turn WordPress into a RESTful API while leveraging on the current familiar theme templates to rapidly build and deploy a web app version. We could then focus more of our time on designing and making the iOS app more user-friendly. Unfortunately, with a 3 month deadline in mind, we decided against using WordPress because the Jetpack REST API only supports regular post types and not CPTs (we also decided not to build an independent REST API because that would take even longer). This was a bummer because with a secure and mature user management system and a tested framework for interacting with the database in place, coupled with many plugins for optimization, WordPress would be the ideal candidate for small teams like ours to deploy mobile and web applications that rely on a solid backend in a relatively short period of time.</p>
+			<p>This experience led me to believe that there is a huge potential for making the WordPress Core RESTful. With work already done in Jetpack, I think that we&#x2019;re already more than half way to achieving this goal. I don&#x2019;t think the rest of the way is easy (or otherwise it would already be done), especially in trying to extend Core while maintaining it backward compatible. Nonetheless, being able to achieve this will put WordPress to the front and center of a developer&#x2019;s toolkit in building awesome applications.</p>
+			<p>There are many benefits to this.</p>
+			<ul>
+			<li>First, as I mentioned earlier, this will allow users to query any bit of information in the database, not just from the comfort of their theme template, but anywhere else on the web (provided that a proper secure authorization and session management system is implemented).This is scarily empowering.</li>
+			<li>If we get it right and make the API as open and extensible as possible, other developers can write plugins to extend the API for more sophisticated querying.</li>
+			<li>A RESTful API is a huge enabler for many developers, big and small, to run with it and create amazing applications and not being bogged down by having to create their own REST API (just like our team was).</li>
+			<li>It leverages on WordPress&#x2019;s powerful <code>wp-admin</code> and Dashboard to manage and interact with the data, a system not many other APIs have. This means regular users can actively participate in the app development process.</li>
+			<li>Developers can use their existing content and architecture to build new applications without much need for database migration, which could be a big hurdle.</li>
+			</ul>
+			<p>Despite these potentials, a quick search for REST API plugins from the WordPress plugin repository revealed only a couple of plugins which have not been maintained for more than 2 years (highly rated plugins nonetheless). I am not certain what the reason for that would be, but there have been definitely a lot of changes in the WordPress Core for the last 2 years. My dream right now is to be able to spend a few months focusing on building a more fully featured REST API for WordPress.</p>
+			<p>It would not be easy to do that all by myself, but if I were in a team of really talented and experienced developers who know WordPress in and out,the process would be a lot more fun and productive. Another important thing is knowing how to test the features and make sure it is scalable. These are the things the good people at Automattic do really well. But more than anything else, working on this would be a great learning experience.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/tinhnguyenlonghoa-org-launched">tinhnguyenlonghoa.org launched!</a></h2>
+					<div class="article-date">03-18-2013</div>
+			<p><a href="http://tinhnguyenlonghoa.org">tinhnguyenlonghoa.org</a> has finally launched this past week.</p>
+			<p>It is my first work for a non-profit, and I am very proud to do my part and help out a friend. I&#x2019;ve known Minh, the project director, for a while. We did a community service trip in Vietnam together more than 4 years ago, not too different from Long Hoa. Since then I&#x2019;ve gained a lot of respect for him and his dedication to community service.</p>
+			<p>This site features a simple, minimal design with a focus on pictures as a way to tell the story. Here are some nice aspects of the site:</p>
+			<ul>
+			<li>Simple, minimal and <strong>responsive</strong> design.</li>
+			<li>Responsive <strong>image sliders</strong> integrated with <strong>lightbox</strong> &#x2013; I want the audience to be able to easily browse through the images &#x2013; the main assets of the site &#x2013; and at the same time look at them in more details.</li>
+			<li>Integration with <strong>Facebook</strong>, including a Like box and Comments. The project&#x2019;s Facebook page has been the main driver for social outreach, and it should continue leveraging that strength.</li>
+			<li>Friendly <strong>content management</strong> backend, relying on the powerful WordPress admin, coupled with Advanced Custom Fields and other great plugins.</li>
+			</ul>
+			<p>This is also my first site in Vietnamese, which imposes an interesting restriction on fonts. There are only 3 fonts from <a href="http://www.google.com/fonts">Google Web Fonts</a> that fully support the Vietnamese characters. I lucked out as Open Sans, my favorite font, supports the Vietnamese language.</p>
+			<p>Working with Minh has been a very pleasant experience. He is always on top with his part of the project, providing content and images very early on. This allowed me to have a good grasp on the content and design to maximize their impact. He is also flexible in working with me in developing solutions for various ideas.</p>
+			<p>There are certain areas of the site that could be further optimized/ revisited for better performance and user experience. Hopefully these will be tackled on soon as the site gains more traffic and has more user testing.</p>
+			<p>This site is also the first to be hosted with <a href="http://pagodabox.com/">pagodabox</a> (wow! there are many firsts with this project!). I really like the object-oriented approach to hosting and the version control (<code>git</code>) built in from the start. However, I had to jump through a few hoops to get WordPress working correctly on there, such as configuring writable directories, syncing with local development (.htaccess for permalink) or WP Super Cache plugin &#x2013; these warrant their own post.</p>
+			<p>Enjoy looking through the site (my apologies in advance for the cryptic and weird Google Translation &#x2013; Google definitely needs to work on their translation machine for English &#x2013; Vietnamese) and let me know if you have any suggestions/ comments.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/user-friendly-input-type-date-and-input-typetime">User-friendly input[type=date] and input[type=time]</a></h2>
+					<div class="article-date">02-18-2013</div>
+			<p>To make a HTML form easier and friendlier for users to use, HTML5 incorporates quite a few <a href="http://www.html5rocks.com/en/tutorials/forms/html5forms/#toc-inputs-attributes-types">new input types</a>. While <code>url</code>, <code>tel</code> and <code>email</code> types have been quite useful when using a mobile device (special keyboard layouts), I find the biggest pain point is with input date and time. Most of the times you don&#x2019;t know what format to input the date in (month first or date first), whether you should use dash versus slash, whether you should include the year etc. <span class="more"></span></p>
+			<p>Many solutions have been used to solve this problem. jQuery plugins <a href="http://jqueryui.com/datepicker/">datepicker</a> and <a href="http://jonthornton.github.com/jquery-timepicker/">timepicker</a> are really helpful on desktop. Mobile browsers have done a good job using native date and time picker (Android and iOS) when the input type is specified.</p>
+			<p>How do we combine both of these solutions to create a single responsive web form? The answer is really simple.</p>
+			<p>My first response was to just call the <code>datepicker()</code> method on any and all <code>input[type=date]</code> elements.</p>
+			<pre><code class="javascript">jQuery( document ).ready( function( $ ) {
+						  $( &apos;input[type=date]&apos; ).each( function() {
+						    $( this ).datepicker();
+						  } );
+						} );
+						</code></pre>
+			<p>There is a few problems associated with this:</p>
+			<ul>
+			<li><code>input[type=date]</code> does not work very well with datepicker. That means whatever value you select using the datepicker will not be registered on the input field.</li>
+			<li><code>datepicker()</code> is not very useful on mobile devices. The pop up window isn&#x2019;t the most user friendly thing.</li>
+			</ul>
+			<p>In order to solve these two problems, the answer would be to:</p>
+			<ol>
+			<li>Use <code>input[type=text]</code> on desktop as well as call <code>datepicker()</code> method.</li>
+			<li>Use <code>input[type=date]</code> on mobile (touch-enabled) devices and not call <code>datepicker()</code>.</li>
+			</ol>
+			<p>This can be achieved using <a href="http://modernizr.com/">Modernizr</a> to detect whether the device is touch-enabled, and JavaScript to swap out the <code>input[type=date]</code> element with one of type text.</p>
+			<p>This could be done with the following snippet:</p>
+			<pre><code class="javascript">if ( !$( &apos;html&apos; ).hasClass( &apos;touch&apos; ) ){
+						    $( &apos;input[type=date]&apos; ).each( function() {
+						        $( this ).clone().attr( &apos;type&apos;, &apos;text&apos; ).insertAfter( this ).datepicker().prev().remove();
+						    } );
+						}
+						</code></pre>
+			<p>This code basically copies the input element, converts it to <code>input[type=text]</code>, calls the <code>datepicker()</code> method on it and then removes the previous element.</p>
+			<p>Admittedly, this method seems like a bit of a hack. At least it will be until jQuery UI datepicker plugin is updated to work with <code>input[type=date]</code>. After that, we can just use Modernizr to selectively call it on desktop browsers without having to do the whole copy and remove business.</p>
+			<p>Give credit where credit is due: the clone/ remove code is not originally mine. I found it on <a href="http://stackoverflow.com/a/12617534/1368032">stackoverflow</a>. I modified it a little bit to make it work with my situation.</p>
+			<p>Here&#x2019;s a codepen I set up to demo this.</p>
+			<pre class="codepen"><code></code><a href="http://codepen.io/tnguyen14/pen/nhbql">Check out this Pen!</a></pre>
+			</p>
+			<p>The example I&#x2019;ve used is for <code>datepicker()</code>. <code>timepicker()</code> should also work in a similar way.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/happy-tet">Happy Tet</a></h2>
+					<div class="article-date">02-10-2013</div>
+			<p>That awesome feeling of a 3 day weekend when its only Saturday and it feels like Sunday, aka the most miserable day of the week in my book, and you realized you still have one more day at home.</p>
+			<p>While most people hate the blizzard and the snow, I actually kinda love it. I&#x2019;m a little sad now that all the snowing is over. I love waking up in the morning and see everything covered in snow. I guess I&#x2019;m one of those rare people who genuinely love winter and the snow. And yes, I do a lot of shoveling too today, and more tomorrow, and I actually don&#x2019;t seem to mind it.</p>
+			<p>It is now officially Vietnamese new year, aka Tet! Although sometimes I wonder if it counts to wait till Eastern Time, since the lunar calendar is only used in Asia.</p>
+			<p>At any rate, Happy New Year to everyone! Have a safe, peaceful, prosperous and blessed year of the snake!</p>
+			<p><img src="http://i2.wp.com/wp.tridnguyen.com/wp-content/uploads/2014/11/medford-snow.jpg?w=840" alt="Snow in Medford"></p>
+			
+				</article><!-- .post-single -->
+			
+			<div class="nav-link">
+					<a class="prev" href="/articles/9"><i class="fa fa-arrow-left"></i> Previous</a>
+					<a class="next" href="/articles/7">Next <i class="fa fa-arrow-right"></i></a>
+			</div>
+			
+			
+	</section><!-- .main-content -->
+		<footer class="main-footer">
+			<div class="social-networks">
+				<div class="twitter link">
+					<a href="https://twitter.com/tridnguyen" rel="me"><i class="fa fa-twitter"></i></a>
+				</div>
+				<div class="github link">
+					<a href="https://github.com/tnguyen14" rel="me"><i class="fa fa-github"></i></a>
+				</div>
+				<div class="linkedin link">
+					<a href="https://linkedin.com/in/triduynguyen" rel="me"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+			Built by Tri Nguyen using <a href="https://github.com/tnguyen14/tobiko">tobiko</a>. Copyrights ® 2021.
+		</footer>
+		<script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="/lib/bxslider/jquery.bxSlider.min.js"></script>
+		<script type="text/javascript" src="/lib/prism/prism.js"></script>
+		<script type="text/javascript">
+			var page = {
+				env: ""
+			};
+		</script>
+		<script type="text/javascript" src="/js/app.js"></script>
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			
+			  ga('create', 'UA-26482928-1', 'tridnguyen.com');
+			  ga('send', 'pageview');
+			
+			</script>	</body>
+</html>
