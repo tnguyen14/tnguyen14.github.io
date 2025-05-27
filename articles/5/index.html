@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript">
+		WebFontConfig = {
+			google: { families: [ 'Source+Code+Pro::latin', 'Source+Sans+Pro:400,400italic:latin', 'Merriweather:400,700:latin' ] }
+		};
+		(function() {
+			var wf = document.createElement('script');
+			wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+				'://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+			wf.type = 'text/javascript';
+			wf.async = 'true';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(wf, s);
+		})();
+	</script>
+	<title>Articles | Tri Nguyen</title>
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+	<div class="main-header">
+		<nav class="main-nav" role="navigation">
+			<ul class="main-menu">
+				<li><a href="https://tridnguyen.com"><i class="fa fa-home"></i>Home</a></li>
+			</ul><!-- .main-menu -->
+		</nav><!-- .main-nav -->
+		<div class="about">
+			<img class="personal" alt="Tri wearing headphones focusing on work" title="Tri Nguyen" src="/images/at_upstatement.jpg"/>
+			<h1 class="site-title">Tri Nguyen</h1>
+			<h2 class="site-tagline">Strongly opinionated, but what do I know?</h2>
+		</div><!-- .about -->
+	</div><!-- .main-header -->
+	<section class="main-content">
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/til-proper-tail-calls">TIL – Proper Tail Calls</a></h2>
+					<div class="article-date">05-02-2016</div>
+			<p>I&#x2019;ve heard of Proper Tail Calls (PTC) being tossed around a lot as a new ES6 thing that a lot of people are excited about, but have no idea what it actually is.</p>
+			<p>This <a href="http://www.2ality.com/2015/06/tail-call-optimization.html">2ality article</a> is really thorough and helpful in explaining what PTC is and how it works.</p>
+			<p>I was first pointed to this topic from <a href="http://v8project.blogspot.com/2016/04/es6-es7-and-beyond.html">a blog post by the V8 team</a>. In it, they also reference an alternative to CTO called <a href="https://github.com/tc39/proposal-ptc-syntax">Syntactic Tail Call (STC)</a>, which is a more explicit way to opt in and use PTC. They prefer this approach due to a couple of reasons</p>
+			<blockquote>
+			<p>1. It makes it more difficult to understand during debugging how execution arrived at a certain point since the stack contains discontinuities and<br />
+			2. Error.prototype.stack contains less information about execution flow which may break telemetry software that collects and analyzes client-side errors.</p>
+			</blockquote>
+			<p>These concerns, as well as a third about performance hit, are <a href="https://github.com/tc39/ecma262/issues/535#issuecomment-209664415">addressed by the WebKit team in a Github issue response</a>.</p>
+			<p>A note about the terminology: when learning about this, another term is also used to describe PTC, i.e. tail call optimization (CTO). I think that PTC is preferred, as it should be a mandatory feature, as it is currently spec-ed in ES6, and not an optional optimization. See <a href="https://twitter.com/filpizlo/status/718878691472715778">this tweet </a>.</p>
+			<p><a href="https://twitter.com/tesseraic">tesseraic</a>, an engineer at Apple, has been incredibly helpful in pointing me to some of these resources and explaining the concept in more details.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/til-csrf-in-node">TIL – CSRF in Node</a></h2>
+					<div class="article-date">04-20-2016</div>
+			<p>Today I learned more in-depth about CSRF (Cross-Site Request Forgery) attack and more specifically how to stop it in node.</p>
+			<p>I&#x2019;ve been thinking more about CSRF after having some conversations at work about it, as well as taking a (mandatory) security training, and wonder how I would go about implementing CSRF in my node application. <a href="https://github.com/pillarjs/understanding-csrf">Understanding CSRF</a> is a pretty good, quick read on the topic.</p>
+			<p>At first, I suspected implementing a solution would be rather involved as I&#x2019;d have to keep track of a time-based token (a unique random value that would last for some time, such as 30 minutes) on the server and validate any form request based on this token.</p>
+			<p>Turns out, it could be as simple as setting a strong random string as the token in the cookie (if the request does not have it set yet), and then expecting this value in the POST request payload (hidden field). The payload field is then compared against the cookie token to determine whether it&#x2019;s a valid request.The cookie acts as the maintainer of the state of the CSRF token in this case.</p>
+			<p>In the hapijs world, this is done with <a href="https://github.com/hapijs/crumb">crumb</a>. I&#x2019;m not familiar with hapi, but when looking into it, I learned about <a href="https://github.com/hapijs/cryptiles">cryptiles</a>, which is a general purpose utility that could create the cryptographically strong random string mentioned above.</p>
+			<p>In the expressjs world, there&#x2019;s <a href="https://github.com/expressjs/csurf">csurf</a>. It uses <a href="https://github.com/pillarjs/csrf">csrf</a> under the hood, which took a slightly different approach where instead of a random string, it generates a token using &#x2018;sha1&#x2019; salted hash with a secret. The secret is attached to the session (either via cookie or session middleware (httpOnly cookie)). In the csurf&#x2019;s example, the token is not sent to the client via a cookie, but just rendered to the form directly. It can later be verified by the server using the secret. It is recommended that the token not be sent back in a response body.</p>
+			<p>For my use case, I am not using an express server-side rendering architecture, so the token will most likely be sent to the client via a cookie, and then read and embedded by the client before POST-ing back to the server. I will update this post when I try this out successfully.</p>
+			<p>Sidenote: while reading about these implementations, I also learned about <a href="http://security.stackexchange.com/a/83670">timing attacks</a> when doing simple string comparison. So both of the libraries I mentioned above (<code>cryptiles</code> and <code>csrf</code>) use constant time comparison. The former implements its own method, while the latter uses <a href="https://npmjs.com/package/scmp">scmp</a>.</p>
+			<p>Update: upon further thinking, for <code>csurf</code> and <code>csrf</code>, the secret is actually the thing that is comparable to the token in <code>crumb</code>. They&#x2019;re both created using node&#x2019;s crypto <code>randomBytes</code> method, which is presumably strong enough to not be guessable. In my limited understanding, I am not sure why the extra step of generating the token is necessary, as the token can be regenerated with the secret, and the salt is stored with the token as well. Perhaps one benefit is to tie the token to a particular session when storing the secret in a session-specific manner (not setting it as a regular cookie).</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/end-to-end-tests-with-docker-selenium">End-to-end tests with docker-selenium</a></h2>
+					<div class="article-date">03-23-2016</div>
+			<p>I spent quite a bit of time at work last year thinking about end-to-end test infrastructures. The main idea behind end-to-end tests is to use browser automation to check whether a web page has rendered correctly, and behave correctly under user interactions.</p>
+			<p>18 months ago, I first set up a simple architecture using <a href="http://mochajs.org/">mocha</a> and <a href="http://webdriver.io/">webdriver.io</a>. Mocha is the main test runner, and as it invokes webdriver.io, the latter will communicate with a selenium server running in the background and send along commands to the browser. What this looks like is, when you run a command like</p>
+			<pre><code>:; mocha test/e2e/index.js</code></pre>
+			<p>it will open up a browser of your choice, interact with the browser as instructed, such as scrolling, clicking, getting element text content, assert any result, close the browser window and finish the test.</p>
+			<p>6 months ago, I updated to using the <code>wdio</code> <a href="http://webdriver.io/guide/testrunner/gettingstarted.html">test runner</a> instead, which <a href="https://github.com/webdriverio/webdriverio/blob/master/examples/wdio/wdio.mocha.conf.js">works with mocha</a>, so the majority of the test code continued to work. It is a bit nicer to use as it provides a global handle to call browser commands from, and thus avoids a bit of boilerplate code to set that up (as much as I usually dislike anything global).</p>
+			<p>Up until now, the way our tests are set up requires a selenium server to be run in the background, and we use <a href="https://github.com/vvo/selenium-standalone"><code>selenium-standalone</code></a> for that, which is quite pleasant. This however becomes an annoyance sometimes for a couple reasons. The selenium version and browser drivers versions were not tracked in our source code, so sometimes the tests could be broken all of a sudden if a bug is introduced in the latest version, or an outdated version is installed. It is also kind of cumbersome to have a separate terminal window open to run this process, or use a <a href="https://www.npmjs.com/package/psy">process manager</a> to keep it running in the background, especially when many are used to running test with a simple <code>npm test</code> command.</p>
+			<p>Now comes the exciting part – the reason for this blog post in the first place. I put together a relatively simple script that could eliminate the need for this background selenium process using <a href="https://github.com/SeleniumHQ/docker-selenium">docker-selenium</a>. The idea is that a selenium docker container is spun up before each test run so the test will connect to it via a port (default to <code>4444</code>), and then removed after the test has finished (either successfully or otherwise). The script looks something like this:</p>
+			<pre><code class="language-bash">#!/usr/bin/env bash
+			# bin/e2e-docker.sh
+			docker run -d --name chrome -p 4444:4444 -v /dev/shm:/dev/shm selenium/standalone-chrome:2.52.0
+			# run actual test command in a subshell to be able to rm docker container afterwards
+			(
+			    # passing arguments along to the test process
+			    npm run test:e2e -- "$@"
+			)
+			docker stop chrome 1&gt; /dev/null &amp;&amp; docker rm chrome 1&gt; /dev/null
+			
+			# save exit code of subshell
+			testresult=$?
+			exit $testresult</code></pre>
+			<p>The <code>chrome</code> docker container exposed port <code>4444</code>, which is the default port for the <code>wdio</code> test runner to connect to. The above script could be invoked via npm run scripts described in <code>package.json</code> as</p>
+			<pre><code class="language-json">
+			"scripts": {
+			    "test:e2e": "wdio test/e2e/wdio.conf.js",
+			    "test": "bin/e2e-docker.sh"
+			}
+			</code></pre>
+			<p>Now we can simply run our end-to-end tests with a simple <code>npm test</code> command. I thought of using the <code>pretest</code> and <code>posttest</code> to set up and tear down the docker container, but <code>posttest</code> will not be executed if the test fails, thus leaving the container running after the test has finished. Pulling the setup and teardown steps into a bash script also allowed me to do a bit more complex setup, which will be described below.</p>
+			<p>While removing the need to run selenium server in the background, this approach requires that you have docker running on your host machine. If you’re on Windows or OS X and use docker-machine to run the docker server, the docker container lives at a different IP address than <code>localhost</code>. To get around that, we can tell the <code>wdio</code> test runner what host it should connect to.</p>
+			<pre><code class="language-bash">:; npm test -- --host $(docker-machine ip)
+			</code></pre>
+			<p>With this approach of using docker-selenium, I can now track the version of selenium drivers in my source code. Furthermore, the browsers are now opened and run inside the docker container instead of the host machine, which I find to be a bit faster and less disruptive to the developer experience. However, there are times during the test writing process where you might want to see what is actually going on for each test command. Fortunately, docker-selenium provides <code>debug</code> images that has a running VNC server that we can connect to in order to visually see the browser window. Keeping the same npm run scripts, I could enable debug mode by running <code>npm test -- --debug</code> with the following modification to the <code>bin/e2e-docker.sh</code> script:</p>
+			<pre><code class="language-bash">#!/usr/bin/env bash
+			
+			CONTAINER_NAME="chrome"
+			# if a debug flag is passed in, use the debug image and open vnc screen sharing
+			if [[ $@ == *"--debug"* ]]; then
+			    # parse the script arguments for the docker server IP address
+			    ip=$(grep -Eo '([0-9]{1,3}.){3}[0-9]{1,3}' &lt;&lt;&lt; "$@")
+			    docker run -d --name $CONTAINER_NAME -p 4444:4444 -p 5900:5900 -v /dev/shm:/dev/shm selenium/standalone-chrome-debug:2.52.0
+			    sleep 2 # wait a bit for container to start
+			    open vnc://"$ip":5900
+			else
+			    docker run -d --name $CONTAINER_NAME -p 4444:4444 -v /dev/shm:/dev/shm selenium/standalone-chrome:2.52.0
+			fi 
+			# run actual test command in a subshell to be able to rm docker container afterwards 
+			(
+			    npm run test:e2e -- "$@" 2&gt; /dev/null
+			)
+			
+			# save exit code of subshell
+			testresult=$?
+			
+			docker stop $CONTAINER_NAME 1&gt; /dev/null &amp;&amp; docker rm $CONTAINER_NAME 1&gt; /dev/null
+			
+			exit $testresult
+			</code></pre>
+			<p>A couple of changes have been made to this script. First, the container name was abstracted to the variable <code>CONTAINER_NAME</code> to keep it DRY. If you run this script in a Jenkins environment, this could potentially be parameterized with the build number as well. Second, an <code>if/else</code> block is used to detect whether a <code>--debug</code> flag was used, and decide which docker image to use accordingly. If debug mode is on, it will also try to open a VNC viewer (I have only tested this on OS X) so you can see the browser window actions (the password is <code>secret</code>).</p>
+			<p>Notice that I keep the <code>wdio test/e2e/wdio.conf.js</code> command behind its own npm run script instead of putting it in the <code>bin/e2e-docker.sh</code> script. This is so that I could still use the old method of running a local selenium server manually and run the test through there. While more cumbersome, it is sometimes helpful to be able to pause the browser and interact directly with it, such as inspecting the DOM elements. Writing end-to-end tests could be rather tricky, and having the ability to inspect could save a lot of time debugging.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/a-moment-of-zen-amidst-the-weird-and-crazy">A moment of zen amidst the weird and crazy</a></h2>
+					<div class="article-date">12-11-2015</div>
+			<figure><img decoding="async" src="http://i1.wp.com/wp.tridnguyen.com/wp-content/uploads/2016/02/photo-1447752875215-b2761acb3c5d.png?resize=300%2C200" alt=""></p>
+			<figcaption>Whangarei Falls, Whangarei, New Zealand &#x2013; by Tim Swaan https://unsplash.com/photos/eOpewngf68w</figcaption></figure>
+			<p>Today is my day off from work.</p>
+			<p>While the temptation to do more work work is strong, I decided that it will be a day for personal growth.</p>
+			<p>So I woke up at a (reasonably) late time, took the time to fix myself some breakfast, setting up my work station with some <a href="https://play.spotify.com/user/spotify/playlist/4BKT5olNFqLB1FAa8OtC8k">soft coffeehouse music</a> in the background. All of this put me in a peaceful, productive and concentrative mood.</p>
+			<p>I hope I will finally finish converting <a href="https://github.com/tnguyen14/ledge">ledge</a> to react and redux. Then maybe I will finally publish those 2 blog posts I have in drafts. I also have 7 tabs open of articles I should read and videos I should watch.</p>
+			<p>Small goals, but I&#x2019;d be very happy if I could get through most of them.</p>
+			<p>I could really get used to this feeling and work environment. Is this what remote work like?</p>
+			<p>2015 has been a crazy and weird year. Wouldn&#x2019;t expect anything less next year. Hopefully I will be able to focus more time on personal growth, learning new technologies, solving more interesting problems, and being a better friend, boyfriend and family member.</p>
+			<p>Here&#x2019;s to hoping!</p>
+			
+				</article><!-- .post-single -->
+			
+			<div class="nav-link">
+					<a class="prev" href="/articles/6"><i class="fa fa-arrow-left"></i> Previous</a>
+					<a class="next" href="/articles/4">Next <i class="fa fa-arrow-right"></i></a>
+			</div>
+			
+			
+	</section><!-- .main-content -->
+		<footer class="main-footer">
+			<div class="social-networks">
+				<div class="twitter link">
+					<a href="https://twitter.com/tridnguyen" rel="me"><i class="fa fa-twitter"></i></a>
+				</div>
+				<div class="github link">
+					<a href="https://github.com/tnguyen14" rel="me"><i class="fa fa-github"></i></a>
+				</div>
+				<div class="linkedin link">
+					<a href="https://linkedin.com/in/triduynguyen" rel="me"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+			Built by Tri Nguyen using <a href="https://github.com/tnguyen14/tobiko">tobiko</a>. Copyrights ® 2025.
+		</footer>
+		<script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="/lib/bxslider/jquery.bxSlider.min.js"></script>
+		<script type="text/javascript" src="/lib/prism/prism.js"></script>
+		<script type="text/javascript">
+			var page = {
+				env: ""
+			};
+		</script>
+		<script type="text/javascript" src="/js/app.js"></script>
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			
+			  ga('create', 'UA-26482928-1', 'tridnguyen.com');
+			  ga('send', 'pageview');
+			
+			</script>	</body>
+</html>

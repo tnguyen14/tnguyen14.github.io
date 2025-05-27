@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript">
+		WebFontConfig = {
+			google: { families: [ 'Source+Code+Pro::latin', 'Source+Sans+Pro:400,400italic:latin', 'Merriweather:400,700:latin' ] }
+		};
+		(function() {
+			var wf = document.createElement('script');
+			wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+				'://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+			wf.type = 'text/javascript';
+			wf.async = 'true';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(wf, s);
+		})();
+	</script>
+	<title>Articles | Tri Nguyen</title>
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+	<div class="main-header">
+		<nav class="main-nav" role="navigation">
+			<ul class="main-menu">
+				<li><a href="https://tridnguyen.com"><i class="fa fa-home"></i>Home</a></li>
+			</ul><!-- .main-menu -->
+		</nav><!-- .main-nav -->
+		<div class="about">
+			<img class="personal" alt="Tri wearing headphones focusing on work" title="Tri Nguyen" src="/images/at_upstatement.jpg"/>
+			<h1 class="site-title">Tri Nguyen</h1>
+			<h2 class="site-tagline">Strongly opinionated, but what do I know?</h2>
+		</div><!-- .about -->
+	</div><!-- .main-header -->
+	<section class="main-content">
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/react-native-extended-stylesheet-and-bootstrap">react-native, extended stylesheet and bootstrap</a></h2>
+					<div class="article-date">06-10-2021</div>
+			
+			<h3 class="wp-block-heading">Learning how to use styles with react-native</h3>
+			
+			
+			
+			<p>I&#8217;ve learned that in order to apply styles to react-native, I would use <code>StyleSheet</code> as such:</p>
+			
+			
+			
+			<pre class="wp-block-code language-jsx"><code>// src/components/Header.jsx
+			
+			import React from 'react';
+			import { StyleSheet, View, Text } from 'react-native';
+			
+			function Header() {
+			  return (
+			    &lt;View&gt;
+			      &lt;Text style={styles.heading}&gt;Heading&lt;/Text&gt;
+			    &lt;/View&gt;
+			  )
+			}
+			
+			const styles = StyleSheet.create({
+			  heading: {
+			    fontSize: 20,
+			    textAlign: 'center'
+			  }
+			})
+			</code></pre>
+			
+			
+			
+			<p>In keeping with <a href="https://tridnguyen.com/articles/learning-react-native/" data-type="URL" data-id="https://tridnguyen.com/articles/learning-react-native/">my goal of reusing as much of the existing app as possible</a>, I want to use Bootstrap for basic styles. This can be achieved with <code>StyleSheet.compose</code>. (I&#8217;m also splitting the styles into its own module.)</p>
+			
+			
+			
+			<pre class="wp-block-code language-jsx"><code>// src/components/Header.jsx
+			
+			import React from 'react';
+			import { View, Text } from 'react-native';
+			import styles from './Header.style.js';
+			
+			function Header() {
+			  return (
+			    &lt;View&gt;
+			      &lt;Text style={styles.heading}&gt;Heading&lt;/Text&gt;
+			    &lt;/View&gt;
+			  )
+			}
+			
+			// src/components/Header.style.js
+			import { StyleSheet } from 'react-native';
+			import BootstrapStyleSheet from 'react-native-bootstrap-styles';
+			
+			const { bs } = new BootsrtapStyleSheet();
+			
+			const styles = StyleSheet.create({
+			  heading: {
+			    fontSize: 20,
+			    textAlign: 'center'
+			  }
+			});
+			export default {
+			  ...styles,
+			  heading: StyleSheet.compose(bs.s1, styles.heading)
+			}
+			</code></pre>
+			
+			
+			
+			<p>So far, it&#8217;s pretty straightforward. </p>
+			
+			
+			
+			<p>Next, I want to use CSS features such as <code>rem</code> units and custom properties, in order to keep the native design as consistent with the web design as possible. From some searching around, the way to use those features is with <code><a href="https://github.com/vitalets/react-native-extended-stylesheet/" data-type="URL" data-id="https://github.com/vitalets/react-native-extended-stylesheet/">react-native-extended-stylesheet</a></code>. A simple example of its usage would look like so:</p>
+			
+			
+			
+			<pre class="wp-block-code language-jsx"><code>// src/components/Header.jsx
+			import React from 'react';
+			import { View, Text } from 'react-native';
+			import EStyleSheet from 'react-native-extended-stylesheet';
+			
+			function Header() {
+			  return (
+			    &lt;View&gt;
+			      &lt;Text style={styles.heading}&gt;Heading&lt;/Text&gt;
+			    &lt;/View&gt;
+			  )
+			}
+			
+			const styles = EStyleSheet.create({
+			  heading: {
+			    fontSize: '1.5rem',
+			    color: '$colorGreen'
+			  }
+			});
+			
+			// src/index.jsx
+			
+			import EStyleSheet from 'react-native-extended-stylesheet';
+			
+			EStyleSheet.build({
+			  $rem: 16,
+			  $colorGreen: '#4caf50'
+			});</code></pre>
+			
+			
+			
+			<p>The <code>EStyleSheet.build()</code> is important to to define the variables, as well as &#8220;calculate&#8221; the stylesheets. However, because of that step, we can&#8217;t use <code>EStyleSheet</code> as a drop-in replacement for <code>StyleSheet</code> when it comes to style composition. At import time, the styles have not been &#8220;calculated&#8221; yet.</p>
+			
+			
+			
+			<pre class="wp-block-code language-jsx"><code>// This does NOT work
+			
+			// src/components/Header.style.js
+			import { StyleSheet } from 'react-native';
+			import EStyleSheet from 'react-native-extended-stylesheet';
+			import BootstrapStyleSheet from 'react-native-bootstrap-styles';
+			
+			const { bs } = new BootsrtapStyleSheet();
+			
+			const styles = EStyleSheet.create({
+			  heading: {
+			    fontSize: '1.5rem',
+			    color: '$colorGreen'
+			  }
+			});
+			export default {
+			  ...styles,
+			  heading: StyleSheet.compose(bs.s1, styles.heading)
+			}</code></pre>
+			
+			
+			
+			<p>In order to combine extended stylesheet with bootstrap styles, the styles need to be dynamically generated at component runtime:</p>
+			
+			
+			
+			<pre class="wp-block-code language-jsx"><code>// src/components/Header.jsx
+			
+			import React from 'react'
+			import { View, Text } from 'react-native';
+			import getStyles from './Header.style.js';
+			
+			function Header() {
+			  const styles = getStyles();
+			  return (
+			    &lt;View&gt;
+			      &lt;Text style={styles.heading}&gt;Heading&lt;/Text&gt;
+			    &lt;/View&gt;
+			  )
+			}
+			
+			// src/components/Header.style.js
+			
+			import { StyleSheet } from 'react-native';
+			import EStyleSheet from 'react-native-extended-stylesheet';
+			import BootstrapStyleSheet from 'react-native-bootstrap-styles';
+			
+			const { bs } = new BootstrapStyleSheet();
+			
+			const styles = EStyleSheet.create({
+			  heading: {
+			    fontSize: '1.5rem',
+			    color: '$colorGreen'
+			  }
+			});
+			
+			export default function () {
+			  return {
+			    ...styles,
+			    heading: StyleSheet.compose(bs.h1, styles.heading)
+			  }
+			}</code></pre>
+			
+			
+			
+			<p>There is a bit more wrapping layers in this workaround, but it achieves the goal of keeping the styles consistent with the usage of Bootstrap and CSS features.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/learning-react-native">Learning react-native</a></h2>
+					<div class="article-date">06-03-2021</div>
+			
+			<p>I am adding an Android native version to a <a href="https://github.com/tnguyen14/ledge" data-type="URL" data-id="https://github.com/tnguyen14/ledge">React app</a> I&#8217;m maintaining as an attempt to learn react-native. I currently know next to nothing about react-native or native development, even though two of my closest friends are native and react-native developers.</p>
+			
+			
+			
+			<p>Hopefully this exercise will provide me with an opportunity to be more informed about building a user experience that feels more native. As a strong believer in the web, I am a little apprehensive about this endeavor. I suspect there will be concepts that I find &#8220;weird&#8221; or difficult to wrap my head around, especially around CSS and layouts.</p>
+			
+			
+			
+			<p>I also worry that this will add a major burden of maintenance for this app. Every new change will need to be done in the web version first, and require another pass to make it work the same for native. I am aware of <code><a href="https://github.com/necolas/react-native-web" data-type="URL" data-id="https://github.com/necolas/react-native-web">react-native-web</a></code>, but I doubt it is something I would consider seriously. I still very much enjoy using &#8220;native&#8221; web constructs.</p>
+			
+			
+			
+			<p>Going into this exercise, I have a couple of high-level goals. </p>
+			
+			
+			
+			<ul class="wp-block-list"><li>Reuse as much of the existing source code as possible.</li><li>Keep the structure of native code as much in parallel to the web counterpart.</li></ul>
+			
+			
+			
+			<p>Not knowing much about react-native, I am not sure if these are realistic. At this moment, I am quite insistent on the first goal, as it would be &#8220;the whole point&#8221; of react-native for me. The elusive idea of &#8220;write once, run everywhere&#8221;. Granted, much of the component markup/ CSS would not be reusable. I am hoping that the redux stuff, such as reducers and actions, or selectors, could be used wholesale. They contain a significant portion of the &#8220;business logic&#8221;, and it would be hugely beneficial to not have to rewrite them. There are logic embedded in the components as well, though it&#8217;s unclear to me whether they can be shared between web and native at this point.</p>
+			
+			
+			
+			<p>The second goal is really about reducing the aforementioned maintenance burden. The more similar/ in parallel the web and native code are, the easier it would be to implement features for both.</p>
+			
+			
+			
+			<p>I will be documenting weird hacks and mistakes along the way. There will be plenty.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/fun-with-auth0-react-and-tokens">Fun with Auth0, React and tokens</a></h2>
+					<div class="article-date">05-30-2021</div>
+			
+			<p>I am working on a React-based Single-Page App (SPA) using Auth0 for authentication. For a while, I have been maintaining <a href="https://github.com/tnguyen14/auth" data-type="URL" data-id="https://github.com/tnguyen14/auth">my own little helper library</a> to do this. It uses the <code><a href="https://github.com/auth0/auth0.js" data-type="URL" data-id="https://github.com/auth0/auth0.js">auth0/auth0-js</a></code> library (which is described as &#8220;Client Side JavaScript toolkit for Auth0 API&#8221;) under the hood.<br><br>I&#8217;ve been aware of a new-ish recommended way to work with Auth0 for a while, and finally decided to migrate my sloppy integration over. I first started with <code><a href="https://github.com/auth0/auth0-spa-js" data-type="URL" data-id="https://github.com/auth0/auth0-spa-js">auth0/auth0-spa-js</a></code>, but soon realized that Auth0 maintains a React SDK, which uses <code>auth0-spa-js</code> under the hood, so I went with <code><a href="https://github.com/auth0/auth0-react" data-type="URL" data-id="https://github.com/auth0/auth0-react">auth0/auth0-react</a></code> instead.<br><br>Most of the steps are pretty straightforward as documented in this <a href="https://auth0.com/docs/quickstart/spa/react" data-type="URL" data-id="https://auth0.com/docs/quickstart/spa/react">quick start guide</a>. The part I struggled with the most was <a href="https://auth0.com/docs/quickstart/spa/react/02-calling-an-api#get-an-access-token" data-type="URL" data-id="https://auth0.com/docs/quickstart/spa/react/02-calling-an-api#get-an-access-token">getting the Access Token to call a backend API</a>.<br><br>Before, in my sloppy integration, I was using the ID token returned from the OAuth flow to call my backend API. It is actually a bad/ wrong implementation, as called out by <a href="https://auth0.com/docs/tokens" data-type="URL" data-id="https://auth0.com/docs/tokens">Auth0 tokens documentation</a>:</p>
+			
+			
+			
+			<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow"><p>Do not use ID tokens to gain access to an API.</p></blockquote>
+			
+			
+			
+			<p>So in order to get a proper access token, I have the following code in the <code>App.jsx</code> component.</p>
+			
+			
+			
+			<pre class="wp-block-code language-jsx"><code>import React, { useState, useEffect } from 'react';
+			import { useAuth0 } from '@auth0/auth0-react';
+			
+			function App() {
+			  const &#91;token, setToken] = useState();
+			  const { getAccessTokenSilently } = useAuth0();
+			
+			  useEffect(() => {
+			    (async () => {
+			      const accessToken = await getAccessTokenSilently();
+			      setToken(accessToken);
+			    })();
+			  });
+			}</code></pre>
+			
+			
+			
+			<p>However, I could not understand why the <code>accessToken</code> I received was not in JWT format, but a small string of maybe 15 characters. It wasn&#8217;t a Bearer token I could use to make XHR call against the REST API server.<br><br>The <a href="https://auth0.com/docs/tokens/access-tokens" data-type="URL" data-id="https://auth0.com/docs/tokens/access-tokens">Auth0 doc page on Access Tokens</a> mentions 2 different kinds &#8211; &#8220;opaque&#8221; and &#8220;JWT&#8221;, but it didn&#8217;t mention how to get the JWT token. I was guessing that the small token I got back was the opaque token.<br><br>Not able to find any reference to this issue online, I randomly tried adding the <code>audience</code> to the call to get the token, which turned out to be exactly the missing piece for me.</p>
+			
+			
+			
+			<pre class="wp-block-code language-js"><code>  const token = await getAccessTokensSilently({
+			    audience: 'https://myapi.com'
+			  })</code></pre>
+			
+			
+			
+			<p>In hindsight, I&#8217;m guessing I was getting the opaque token because by default, Auth0 was returning the access token needed for the <code>/userinfo</code> endpoint only. If anyone knows the answer to this, I would love to know.<br><br><strong>UPDATE</strong>: This behavior is documented in this post <a href="https://community.auth0.com/t/why-is-my-access-token-not-a-jwt-opaque-token/31028">https://community.auth0.com/t/why-is-my-access-token-not-a-jwt-opaque-token/31028</a></p>
+			
+			
+			
+			<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow"><p>In order to receive a JWT you must include an <code>audience</code> parameter with your token request.</p></blockquote>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/between-the-world-and-me-ta-nehisi-coates">&#8220;Between the World and Me&#8221; &#8211; Ta-Nehisi Coates</a></h2>
+					<div class="article-date">02-04-2021</div>
+			
+			<div style="text-align: center;"><a href="https://www.amazon.com/gp/product/0812993543/ref=as_li_tl?ie=UTF8&#038;camp=1789&#038;creative=9325&#038;creativeASIN=0812993543&#038;linkCode=as2&#038;tag=tridnguyen-20&#038;linkId=e1e88c1cd0e6d1eaeba304218bafabbb"><img decoding="async" border="0" src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&#038;MarketPlace=US&#038;ASIN=0812993543&#038;ServiceVersion=20070822&#038;ID=AsinImage&#038;WS=1&#038;Format=_SL250_&#038;tag=tridnguyen-20" ></a></div>
+			
+			
+			
+			<p>I&#8217;ve been wanting to read this book for a long time, and finally found the time to do so at the end of 2020. Wow! What an insightful read! I&#8217;m glad I got to experience it.</p>
+			
+			
+			
+			<p>Based on reviews and comments about this popular book, one might go into reading it expecting an intellectual conversation about the history of race and racism in America. I was however enthralled by an intensely emotional and honest telling of a personal narrative. Even though the story is of an individual, I couldn&#8217;t help but think about the countless human stories similar to this one, having been lived and is being lived out every day, some perhaps more tragic. I also found myself comparing the story with how I grew up and found my ways in the world, and how different my experiences and thus perspective are. Yet there is a common humanity in the personal struggles and the human emotions that I could relate to and recognize. That is the lesson I took away from the book &#8211; while the conversation about race and racism is often explored through the lens of rationality and morality, it is first and foremost a lived experience, and one filled with intense and personal feelings and memories.</p>
+			
+				</article><!-- .post-single -->
+			
+			<div class="nav-link">
+					<a class="prev" href="/articles/3"><i class="fa fa-arrow-left"></i> Previous</a>
+					<a class="next" href="/articles/1">Next <i class="fa fa-arrow-right"></i></a>
+			</div>
+			
+			
+	</section><!-- .main-content -->
+		<footer class="main-footer">
+			<div class="social-networks">
+				<div class="twitter link">
+					<a href="https://twitter.com/tridnguyen" rel="me"><i class="fa fa-twitter"></i></a>
+				</div>
+				<div class="github link">
+					<a href="https://github.com/tnguyen14" rel="me"><i class="fa fa-github"></i></a>
+				</div>
+				<div class="linkedin link">
+					<a href="https://linkedin.com/in/triduynguyen" rel="me"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+			Built by Tri Nguyen using <a href="https://github.com/tnguyen14/tobiko">tobiko</a>. Copyrights ® 2025.
+		</footer>
+		<script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="/lib/bxslider/jquery.bxSlider.min.js"></script>
+		<script type="text/javascript" src="/lib/prism/prism.js"></script>
+		<script type="text/javascript">
+			var page = {
+				env: ""
+			};
+		</script>
+		<script type="text/javascript" src="/js/app.js"></script>
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			
+			  ga('create', 'UA-26482928-1', 'tridnguyen.com');
+			  ga('send', 'pageview');
+			
+			</script>	</body>
+</html>

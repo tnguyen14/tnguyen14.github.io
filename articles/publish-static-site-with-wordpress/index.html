@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript">
+		WebFontConfig = {
+			google: { families: [ 'Source+Code+Pro::latin', 'Source+Sans+Pro:400,400italic:latin', 'Merriweather:400,700:latin' ] }
+		};
+		(function() {
+			var wf = document.createElement('script');
+			wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+				'://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+			wf.type = 'text/javascript';
+			wf.async = 'true';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(wf, s);
+		})();
+	</script>
+	<title>Publish static site with WordPress | Tri Nguyen</title>
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+	<div class="main-header">
+		<nav class="main-nav" role="navigation">
+			<ul class="main-menu">
+				<li><a href="https://tridnguyen.com"><i class="fa fa-home"></i>Home</a></li>
+			</ul><!-- .main-menu -->
+		</nav><!-- .main-nav -->
+		<div class="about">
+			<img class="personal" alt="Tri wearing headphones focusing on work" title="Tri Nguyen" src="/images/at_upstatement.jpg"/>
+			<h1 class="site-title">Tri Nguyen</h1>
+			<h2 class="site-tagline">Strongly opinionated, but what do I know?</h2>
+		</div><!-- .about -->
+	</div><!-- .main-header -->
+	<section class="main-content">
+		<div class="post-single">
+			<h1>Publish static site with WordPress</h1>
+			<div class="article-date">08-10-2015</div>
+<p>When I first created <a href="http://tridnguyen.com/articles/introducing-tobiko/">tobiko</a>, the use case I had in mind was small static sites or blogs for developers. I was inspired by Jekyll and Octopress, but did not want to deal with installing Ruby, and I wanted to use Node and Grunt to be the plumbing behind it.</p>
+<p>After using tobiko for a while, I realized that there are certain limitations with maintaining a static blog, such as the inability to write any content on a mobile device because you&#x2019;re stuck with using files to generate content. As the type of person whose ideas come and go readily, I often get frustrated not being able to put my thoughts down when I feel the rush of inspiration, only to find myself staring at the blank screen when I actually have the time to write.</p>
+<p>As the <a href="http://wp-api.org/">WP-API</a> project gained more traction, it dawned on me that I could take advantage of WordPress as a great CMS with awesome admin UI, while still craft and publish the final front-end in a static manner.</p>
+<p>The idea is pretty simple: content (regular posts or even custom post types) is created and managed on a WordPress instance. It is then pulled into tobiko at build time, when the site is generated. The WP content is put on tobiko&#x2019;s content tree, so that regular Handlebars templates are still used to generate the final HTML.</p>
+<p>The extra configuration for WordPress is as simple as</p>
+<pre><code class="language-javascript">wordpress: {
+			  apiRoot: &apos;http://your-wordpress-instance/wp-json&apos;,
+			  contents: [{
+			    postType: &apos;posts&apos;,
+			    folder: &apos;articles&apos;,
+			    template: &apos;article.hbs&apos;
+			  }]
+			}</code></pre>
+<p>I have documented this feature on tobiko <a href="https://github.com/tnguyen14/tobiko#wordpress">https://github.com/tnguyen14/tobiko#wordpress</a>.</p>
+<p>This is a real eye-opening discovery for me. The WP-API project is really powerful in enabling the separation between a backend managed with WordPress (which is very delightful to use) versus the front end (which could sometimes be painful done in WordPress and PHP).</p>
+<p>When used this way, tobiko provides all the benefits of a static site, i.e. fast, cache-able pages with cheap hosting, and the benefits of a fully-featured and well-known CMS that is used for what it&#x2019;s good at, managing content. I am now able to write my drafts on my phone (the WordPress Android app is excellent, and has come a long way), and then publish it later with a simple command from the terminal.</p>
+
+					<div id="disqus_thread"></div>
+					<script type="text/javascript">
+						/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+						var disqus_shortname = 'tridnguyen'; // required: replace example with your forum shortname
+				
+						/* * * DON'T EDIT BELOW THIS LINE * * */
+						(function() {
+							var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+							dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+							(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+						})();
+					</script>
+					<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+					<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+		</div>
+	</section><!-- .main-content -->
+		<footer class="main-footer">
+			<div class="social-networks">
+				<div class="twitter link">
+					<a href="https://twitter.com/tridnguyen" rel="me"><i class="fa fa-twitter"></i></a>
+				</div>
+				<div class="github link">
+					<a href="https://github.com/tnguyen14" rel="me"><i class="fa fa-github"></i></a>
+				</div>
+				<div class="linkedin link">
+					<a href="https://linkedin.com/in/triduynguyen" rel="me"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+			Built by Tri Nguyen using <a href="https://github.com/tnguyen14/tobiko">tobiko</a>. Copyrights ® 2025.
+		</footer>
+		<script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="/lib/bxslider/jquery.bxSlider.min.js"></script>
+		<script type="text/javascript" src="/lib/prism/prism.js"></script>
+		<script type="text/javascript">
+			var page = {
+				env: ""
+			};
+		</script>
+		<script type="text/javascript" src="/js/app.js"></script>
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			
+			  ga('create', 'UA-26482928-1', 'tridnguyen.com');
+			  ga('send', 'pageview');
+			
+			</script>	</body>
+</html>

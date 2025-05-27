@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript">
+		WebFontConfig = {
+			google: { families: [ 'Source+Code+Pro::latin', 'Source+Sans+Pro:400,400italic:latin', 'Merriweather:400,700:latin' ] }
+		};
+		(function() {
+			var wf = document.createElement('script');
+			wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+				'://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+			wf.type = 'text/javascript';
+			wf.async = 'true';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(wf, s);
+		})();
+	</script>
+	<title>Articles | Tri Nguyen</title>
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+	<div class="main-header">
+		<nav class="main-nav" role="navigation">
+			<ul class="main-menu">
+				<li><a href="https://tridnguyen.com"><i class="fa fa-home"></i>Home</a></li>
+			</ul><!-- .main-menu -->
+		</nav><!-- .main-nav -->
+		<div class="about">
+			<img class="personal" alt="Tri wearing headphones focusing on work" title="Tri Nguyen" src="/images/at_upstatement.jpg"/>
+			<h1 class="site-title">Tri Nguyen</h1>
+			<h2 class="site-tagline">Strongly opinionated, but what do I know?</h2>
+		</div><!-- .about -->
+	</div><!-- .main-header -->
+	<section class="main-content">
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/publish-static-site-with-wordpress">Publish static site with WordPress</a></h2>
+					<div class="article-date">08-10-2015</div>
+			<p>When I first created <a href="http://tridnguyen.com/articles/introducing-tobiko/">tobiko</a>, the use case I had in mind was small static sites or blogs for developers. I was inspired by Jekyll and Octopress, but did not want to deal with installing Ruby, and I wanted to use Node and Grunt to be the plumbing behind it.</p>
+			<p>After using tobiko for a while, I realized that there are certain limitations with maintaining a static blog, such as the inability to write any content on a mobile device because you&#x2019;re stuck with using files to generate content. As the type of person whose ideas come and go readily, I often get frustrated not being able to put my thoughts down when I feel the rush of inspiration, only to find myself staring at the blank screen when I actually have the time to write.</p>
+			<p>As the <a href="http://wp-api.org/">WP-API</a> project gained more traction, it dawned on me that I could take advantage of WordPress as a great CMS with awesome admin UI, while still craft and publish the final front-end in a static manner.</p>
+			<p>The idea is pretty simple: content (regular posts or even custom post types) is created and managed on a WordPress instance. It is then pulled into tobiko at build time, when the site is generated. The WP content is put on tobiko&#x2019;s content tree, so that regular Handlebars templates are still used to generate the final HTML.</p>
+			<p>The extra configuration for WordPress is as simple as</p>
+			<pre><code class="language-javascript">wordpress: {
+						  apiRoot: &apos;http://your-wordpress-instance/wp-json&apos;,
+						  contents: [{
+						    postType: &apos;posts&apos;,
+						    folder: &apos;articles&apos;,
+						    template: &apos;article.hbs&apos;
+						  }]
+						}</code></pre>
+			<p>I have documented this feature on tobiko <a href="https://github.com/tnguyen14/tobiko#wordpress">https://github.com/tnguyen14/tobiko#wordpress</a>.</p>
+			<p>This is a real eye-opening discovery for me. The WP-API project is really powerful in enabling the separation between a backend managed with WordPress (which is very delightful to use) versus the front end (which could sometimes be painful done in WordPress and PHP).</p>
+			<p>When used this way, tobiko provides all the benefits of a static site, i.e. fast, cache-able pages with cheap hosting, and the benefits of a fully-featured and well-known CMS that is used for what it&#x2019;s good at, managing content. I am now able to write my drafts on my phone (the WordPress Android app is excellent, and has come a long way), and then publish it later with a simple command from the terminal.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/supporting-multiple-build-tools">Supporting multiple build tools</a></h2>
+					<div class="article-date">06-03-2015</div>
+			<p>At Demandware, I work on a reference application &#x2013; sort of like a starting point for developers to use in building a&#xA0;e-commerce web application. Its purpose is to cut down on implementation time. One of the demands for this project is to create something that can be used and liked many developers with varied backgrounds, experiences and opinions.</p>
+			<p>When I decided to introduce a much needed modern build tool into the project (for things like compiling Sass to CSS, bundling browserify modules, running tests etc.), I was met with a choice of whether to use grunt or gulp.</p>
+			<p>While grunt has grown to be quite popular among many developers (the ones at my company included), there are limits to its approach that make it clunky to work with (a declarative API in defining tasks, different tasks interact with each other through the file system). Gulp has gained quite a bit of popularity due to its approach of using stream and a programmatic API. Admittedly, gulp is a lot more fun for me to use and maintain.</p>
+			<p>However, this was not a straightforward choice as many people were voicing concern against going after the &#x201C;latest and greatest&#x201D; tool, and wanting to keep the technology stack consistent within the enterprise. While this is not an argument I agree with, I could appreciate and respect the intention.</p>
+			<p>Instead of plunging into a heated debate with other engineers over what is a better build tool, I decided to support both for the project. In retrospect, this decision has turned out to be a wise one.</p>
+			<p>It makes the idea of introducing a build tool that much easier to sell. I have the ability&#xA0;of pitch it by saying something like &#x201C;you can use either gulp or grunt, and they both would work the same&#x201D;. It appeals to three groups &#x2013; the ones who have spent time and effort learning grunt and feel comfortable in it, the ones who keep more up to date with&#xA0;bleeding edge, and also the ones who do not know either but want to learn/ use one.</p>
+			<p>Furthermore, it sets the expectation that while a build tool is needed and important in modern web development, the project is not tied to a single tool. This opens up room for experimentation with new workflow and tooling options. If a new tool is available, it should be adopted and played with, regardless of whether it is a grunt or gulp tool. This also means that a completely new build tool can be experimented with as well, be it broccoli, npm run-scripts, or (gasp!) even make. We promise that the interface and tasks should be <strong>eventually</strong> consistent across these build tools, but they do not have to be on parity at any single time. We do try however to make&#xA0;the most basic tasks such as Sass and browserify to&#xA0;be available across all build tools.</p>
+			<p>While this setup makes a lot of sense for our project, it might not be as practical or wise for others, especially those that are used/ maintained by a small group of people whose preferences/ opinions are more closely aligned. Having said that, I find it quite liberating and welcoming to newcomers to a project to have different build tools available. It is sort of like a quiet nod to all the three groups I mentioned above, making sure that none of them feels particularly left out. I have come to strongly believe that in order to make a project successful, it is usually helpful to make contributors, especially newcomers, feel welcomed and comfortable.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/introducing-tobiko">Introducing Tobiko</a></h2>
+					<div class="article-date">11-17-2014</div>
+			<p>About a year and a half ago, amidst the hype of static sites, I attempted to convert my WordPress blog over to a static blog. The advantages were clear to me as a developer: much faster performance, authoring in markdown, source-controlled content out of the box, easy and free hosting with Github Pages, and the list goes on. This was the motivation for <a href="https://github.com/tnguyen14/tobiko">tobiko</a>, a Grunt-based static site generator &#x2013; a tool I wrote that I thought would be useful for other developers out there.</p>
+			<h3>Existing static site generators</h3>
+			<p>The path to tobiko where it is today was not always straight forward however. I did not want to reinvent the wheels initially, and tried out a few different static site generators out there.</p>
+			<p>I began with the obvious choice &#x2013; Octopress powered by Jekyll. There was (and still is) a lot of enthusiasm about Jekyll in the open source community, and I believe that is so for good reasons. However, at this time period, I started to write a lot more JavaScript in the browser as well as node, and for some reason Ruby and its tool chain never really clicked for me. I had a lot of issues setting Octopress up and deploying properly, most likely due to my own shortcoming, despite having taken an intro to Ruby course on Codeacademy a few months prior.</p>
+			<p>As node was already a huge and growing community back then, there were a few contenders of static site generator written in node as well. Most notably was <a href="http://wintersmith.io/">wintersmith</a>, which I thought was very cool. I tried it out and even wrote <a href="https://github.com/tnguyen14/wintersmith-handlebars">a plugin</a> for it. Nonetheless, I ended up parting ways with wintersmith as well. The tool was authored mostly in Coffeescript, which did not appeal to me, and the whole plugin architecture seemed confusing.</p>
+			<h3>Grunt &#x2013; a proven build tool</h3>
+			<p>At the same time, Grunt was quickly becoming very popular as a mainstream build tool with a great community around it. And I thought the whole idea of a static site generator fits in very well with a build tool ecosystem. So I created <a href="https://github.com/tnguyen14/tobiko">tobiko</a> &#x2013; a Grunt-based static site generator.</p>
+			<h3>Main features</h3>
+			<p>I wanted tobiko to be based on a stack that I would like to work with. Here are a few highlights:</p>
+			<ul>
+			<li>tobiko itself is a glorified grunt plugin, which features 2 main task &#x2013; parsing content and generating html pages.</li>
+			<li>Content can be written in either Markdown (with YAML frontmatter) or JSON.</li>
+			<li>Templates are written in Handlebars by default.</li>
+			<li>Styles are written in SCSS by default.</li>
+			<li>JavaScript uses RequireJS to support AMD syntax.</li>
+			<li>Site and project configurations are stored in JSON files that can be overwritten based on the environment (<code>dev</code> vs <code>prod</code>).</li>
+			<li>Content can be nested indefinitely in the traditional file system. HTML pages reflect that nesting structure. That path however can be overwritten as desired.</li>
+			<li>Pagination and archives.</li>
+			<li>Image compression with responsive image support by generating multiple image resolutions on build.</li>
+			<li>Deployment to Github Pages or any static server with <code>rsync</code>.</li>
+			</ul>
+			<h3>Yeoman generator</h3>
+			<p>If these features are enough to intrigue you, I&#x2019;d encourage you to try tobiko out. I&#x2019;ve also written a <a href="https://github.com/tnguyen14/generator-tobiko">Yeoman generator</a> for tobiko, so that you can set up all the directory structure and grunt tasks within a minute or two. The whole idea is to scaffold and deploy a simple static site within a matter of minutes.</p>
+			<h3>Roadmap</h3>
+			<p>I have used tobiko to create a few sites so far with very satisfying results. I think that something like tobiko can be very useful for a simple business site, personal blog or even a style guide for larger projects. It is definitely meant for developers who know their way around code and JavaScript, and who enjoy writing content in Markdown.</p>
+			<p>In the course of using tobiko, I have found a few areas for improvement as well as possible ways to expand the project. Here are some ideas of what I&#x2019;d like to do with it next (without selling too much vaporware):</p>
+			<ul>
+			<li>Create a gulp-based version. File systems are great, but streams can speed up the build process many times over.</li>
+			<li>Add more tests to make the tasks more stable.</li>
+			<li>Support for browserify/ CommonJS syntax for JavaScript.</li>
+			<li>Support for other templating engines.</li>
+			</ul>
+			<p>If you take a look at tobiko (which is by itself pretty simple) and think you can help out with these items, please feel free to file an issue or send a pull request.</p>
+			<p>Thanks very much for reading this far, and if I&#x2019;ve got you somewhat convinced, definitely give <a href="https://github.com/tnguyen14/tobiko">tobiko</a> and <a href="https://github.com/tnguyen14/generator-tobiko">generator-tobiko</a> a try!</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/aliasify-config">Use aliasify to include configurations in your web application</a></h2>
+					<div class="article-date">09-20-2014</div>
+			<p>As I build more web applications, one problem that I keep running into is how to include application configurations into the application source code.</p>
+			<h3>What do I mean by configurations?</h3>
+			<p>They include application-specific settings such as the application name, API URL, debug mode etc. These are metadata to the application, similar to the metadata contained in <code>package.json</code> for a Node module.</p>
+			<p>As I develop most of my applications locally, some of these settings will differ when the application is served on localhost versus when served in production. For eg., I usualy use a staging API server for local development and then a production server for deployment.</p>
+			<h3>I could certainly hardcode these settings into the source code right?</h3>
+			<p>The fact that I need 2 (or more) environment-specific versions of these settings make them difficult to be hardcoded. Furthermore, as a developer, I feel a little &#x201C;dirty&#x201D; when I hardcode these settings. Ideally, they should be declared in a JSON file somewhere, just like <code>package.json</code>.</p>
+			<h3>There must be other solutions out there!</h3>
+			<p>Surprisingly, there isn&#x2019;t a good straight forward solution out there, as far as I know (if you know of one, please leave a comment). Here are a few worth mentioning:</p>
+			<p>One can follow the approach outlined by Addy Osmani in <a href="http://addyosmani.com/blog/environment-specific-builds-with-grunt-gulp-or-broccoli/">making environment-specific builds with build tools</a> and use some sort of string replacement plugin. However, this will introduce some &#x2018;not-so-pretty&#x2019; delimiters in the codebase, such as <code>@@foo</code> used by grunt-replace.</p>
+			<p>Henrik Joreteg&#x2019;s <a href="https://github.com/HenrikJoreteg/clientconfig">clientconfig</a> is another elegant solution and very close to what I have in mind, however it relies on a server component to set all the configurations in a cookie. This is not a hard requirement, but is not feasible for a static site running on a simple file server (such as Github Pages) like this blog.</p>
+			<h3>Another attempt at solving this problem</h3>
+			<p>If you are using <a href="https://github.com/substack/node-browserify">browserify</a> to bundle your JavaScript code, this might be a good solution for you.</p>
+			<p>Using <a href="https://github.com/benbria/aliasify">aliasify</a>, you can require your config, which is declared in a <code>config.json</code> file like this:</p>
+			<pre><code class="language-javascript">{
+						  &quot;API_URL&quot;: &quot;http://example_server.com/api&quot;,
+						  &quot;env&quot;: &quot;development&quot;
+						}</code></pre>
+			<pre><code class="language-javascript">var config = require(&apos;config&apos;);
+						
+						console.log(config.API_URL); //prints out API_URL
+						if (config.env === &apos;development&apos;) {
+						  // do something specifically in development mode
+						}</code></pre>
+			<p>To declare this transformation, you can add the following section to <code>package.json</code>:</p>
+			<pre><code class="language-javascript">{
+						  &quot;aliasify&quot;: {
+						    aliases: {
+						      &quot;config&quot;: &quot;./config.json&quot;
+						    }
+						  }
+						}</code></pre>
+			<p>Pretty simple, right?</p>
+			<h3>Environment-specific configs</h3>
+			<p>We can make this even better, by allowing for environment-sepcific configs. To do that, I recommend using a build tool like grunt or gulp. I am sure there is probably a way to do it with just the simple browserify command line interface, but using browserify programmatically makes things a lot easier.</p>
+			<p>Here&#x2019;s an example of how I am using this in a recent project:</p>
+			<pre><code class="language-javascript">// gulpfile.js
+						
+						// enable development mode
+						var dev = false;
+						gulp.task(&apos;enable-dev-mode&apos;, function () {
+						  dev = true;
+						});
+						
+						gulp.task(&apos;scripts&apos;, function () {
+						  // set up browserify bundle in here
+						  // see https://github.com/gulpjs/gulp/blob/master/docs/recipes/browserify-uglify-sourcemap.md
+						
+						  // aliasify config
+						  var aliasify = require(&apos;aliasify&apos;).configure({
+						  aliases: {
+						    &apos;config&apos;: &apos;./config&apos; + (dev ? &apos;.dev&apos; : &apos;&apos;) + &apos;.json&apos;
+						  },
+						  configDir: __dirname
+						  })
+						  bundler.transform(aliasify);
+						});</code></pre>
+			<p>In this approach, aliasify will automatically use <code>config.dev.json</code> for development environment and <code>config.json</code> for production one.</p>
+			<p>A similar approach could be taken when using <a href="https://github.com/jmreidy/grunt-browserify">grunt-browserify</a>. In fact, it is probably easier to do environment-specific stuff with grunt due to its ability to declare a task target.</p>
+			<p>There you have it, a simple approach to accessing environment configuations in your project that is made possible by browserify.</p>
+			<h3>What&#x2019;s bad, what&#x2019;s good, what could be better?</h3>
+			<p>This solution&#x2019;s downside is relying on browserify (and possibly a build system), which might not be applicable for an older project. If you use RequireJS/AMD, I imagine it&#x2019;d be similarly easy to include such a config file using the <a href="https://github.com/millermedeiros/requirejs-plugins">JSON plugin</a>.</p>
+			<p>One possible improvement to this solution is allowing the ability to cascade configs across environment. For example:</p>
+			<p>In <code>config.json</code></p>
+			<pre><code class="language-javascript">{
+						  &quot;appName&quot;: &quot;FooBar&quot;,
+						  &quot;apiUrl&quot;: &quot;http://foobar.com/api&quot;
+						}</code></pre>
+			<p>And then <code>config.dev.json</code> just &#x201C;extend&#x201D; it without redeclaring common configs:</p>
+			<pre><code class="language-javascript">{
+						  &quot;apiUrl&quot;: &quot;http://localhost:3000&quot;
+						}</code></pre>
+			<p>This is currently not possible with using aliasify. I have implemented a similar version of this as a grunt task for <a href="https://github.com/tnguyen14/tobiko#configjson">tobiko</a>, but it&#x2019;s not polished enough to be used by others yet. I will update this space if and when this becomes available.</p>
+			
+				</article><!-- .post-single -->
+			
+			<div class="nav-link">
+					<a class="prev" href="/articles/8"><i class="fa fa-arrow-left"></i> Previous</a>
+					<a class="next" href="/articles/6">Next <i class="fa fa-arrow-right"></i></a>
+			</div>
+			
+			
+	</section><!-- .main-content -->
+		<footer class="main-footer">
+			<div class="social-networks">
+				<div class="twitter link">
+					<a href="https://twitter.com/tridnguyen" rel="me"><i class="fa fa-twitter"></i></a>
+				</div>
+				<div class="github link">
+					<a href="https://github.com/tnguyen14" rel="me"><i class="fa fa-github"></i></a>
+				</div>
+				<div class="linkedin link">
+					<a href="https://linkedin.com/in/triduynguyen" rel="me"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+			Built by Tri Nguyen using <a href="https://github.com/tnguyen14/tobiko">tobiko</a>. Copyrights ® 2025.
+		</footer>
+		<script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="/lib/bxslider/jquery.bxSlider.min.js"></script>
+		<script type="text/javascript" src="/lib/prism/prism.js"></script>
+		<script type="text/javascript">
+			var page = {
+				env: ""
+			};
+		</script>
+		<script type="text/javascript" src="/js/app.js"></script>
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			
+			  ga('create', 'UA-26482928-1', 'tridnguyen.com');
+			  ga('send', 'pageview');
+			
+			</script>	</body>
+</html>

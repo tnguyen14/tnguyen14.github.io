@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript">
+		WebFontConfig = {
+			google: { families: [ 'Source+Code+Pro::latin', 'Source+Sans+Pro:400,400italic:latin', 'Merriweather:400,700:latin' ] }
+		};
+		(function() {
+			var wf = document.createElement('script');
+			wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+				'://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+			wf.type = 'text/javascript';
+			wf.async = 'true';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(wf, s);
+		})();
+	</script>
+	<title>Articles | Tri Nguyen</title>
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+	<div class="main-header">
+		<nav class="main-nav" role="navigation">
+			<ul class="main-menu">
+				<li><a href="https://tridnguyen.com"><i class="fa fa-home"></i>Home</a></li>
+			</ul><!-- .main-menu -->
+		</nav><!-- .main-nav -->
+		<div class="about">
+			<img class="personal" alt="Tri wearing headphones focusing on work" title="Tri Nguyen" src="/images/at_upstatement.jpg"/>
+			<h1 class="site-title">Tri Nguyen</h1>
+			<h2 class="site-tagline">Strongly opinionated, but what do I know?</h2>
+		</div><!-- .about -->
+	</div><!-- .main-header -->
+	<section class="main-content">
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/ievms-vagrant">ievms &#8211; Easily bring up IE browsers on any environment with Vagrant and VirtualBox</a></h2>
+					<div class="article-date">07-27-2018</div>
+			<p>Thinking about incorporating IE browser testing for your site, but unsure how to proceed given that you&#8217;re developing on a macOS or Linux environment? Do you want to bring up a Windows virtual machine with something like VirtualBox, but not sure how to grab a valid Windows license? Luckily, Microsoft is aware of how difficult it is to develop and test for Edge and IE browsers, so they have released <a href="https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/">free virtual machines that already have these browsers built in</a>.</p>
+			<p>If you go to the Microsoft developer website above, you have the options of downloading these VM images for different virtualization softwares (for e.g. VirtualBox and VMWare). However, these steps still feel pretty manual. I wanted to have a simple set of instructions that I could pass around to folks on my team to do IE testing with. Ideally, it would just be a script that anyone can run from any development environment. Thankfully, Microsoft also made <a href="http://blog.syntaxc4.net/post/2014/09/03/windows-boxes-for-vagrant-courtesy-of-modern-ie.aspx">vagrant images available</a>, so I was able to create a simple wrapper around this.</p>
+			<h2><a href="https://github.com/tnguyen14/ievms">ievms &#8211; a simple way to start IE and Edge VMs with Vagrant and Virtual Box</a></h2>
+			<p><a href="https://www.vagrantup.com/">Vagrant</a> is a developer tool that allows you to create automated and reproducible development environment using virtual machines. It works pretty well with <a href="https://www.virtualbox.org/wiki/VirtualBox">VirtualBox</a>, a free and well-supported virtualizer.</p>
+			<p>ievms relies on vagrant, VirtualBox and the images provided Microsoft to create a simple workflow for managing IE browsers across different Windows versions.</p>
+			<p>Bringing up a Windows 10 virtual machine with IE 10 installed and ready to use:</p>
+			<pre><code>:; vagrant up ie10-win7</code></pre>
+			<p>This will download the image if it&#8217;s not installed, add it to vagrant, and then bring up the virtual machine with a graphical UI. Once you&#8217;re done testing, you can suspend the machine with <code>vagrant suspend ie10-win7</code>, or remove it completely with <code>vagrant destroy ie10-win7</code>. Even if you removed it, the next time you need to bring it up, the image is already cached locally, so you will not have to wait for the download again.</p>
+			<p>In addition to IE10 on Windows 7, other browser-platform combinations are supported by default:<br />
+			&#8211; ie6-xp<br />
+			&#8211; ie8-xp<br />
+			&#8211; ie7-vista<br />
+			&#8211; ie8-win7<br />
+			&#8211; ie9-win7<br />
+			&#8211; ie10-win7<br />
+			&#8211; ie11-win7<br />
+			&#8211; ie10-win8<br />
+			&#8211; ie11-win81<br />
+			&#8211; msedge-win10</p>
+			<p>Bonus: You can also test a local website that&#8217;s running on the host development environment. For example, if you have a site running on port 8080 locally, you can reach it from within the virtual machine by going to http://192.168.33.1:8080.</p>
+			<p>Check out <a href="https://github.com/tnguyen14/ievms"><code>ievms</code>&#8216;s README</a> for more instruction on how to get started.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/authentication-for-google-cloud-functions-with-jwt-and-auth0">Authentication for Google Cloud Functions with JWT and Auth0</a></h2>
+					<div class="article-date">11-17-2017</div>
+			<blockquote><p>Surprised that there was no built-in authentication mechanism for Google Cloud Functions, I made an attempt to implement a simple one with JWT and Auth0</p></blockquote>
+			<p>With all the hype around serverless, I recently took a stab at creating a cloud function and see how it goes. I went with Google Cloud Functions instead of AWS Lambda, because I had some free signup credits on Google.</p>
+			<p>I started with this tutorial <a href="https://cloud.google.com/functions/docs/tutorials/http">https://cloud.google.com/functions/docs/tutorials/http</a>, and it seemed pretty straightforward. I created a cloud function with a HTTP trigger in about 30 minutes.</p>
+			<p>The function I deployed adds an entry to a Cloud Datastore database, and would do so every time I make a curl request to the function&#8217;s endpoint. That was pretty thrilling.</p>
+			<pre><code class="language-bash">curl -X POST -H "Content-Type: application/json" \
+			-d '{"foo": "bar"}' \
+			"https://.cloudfunctions.net/post"
+			</code></pre>
+			<p>However, it soon dawned on me that this is pretty insecure, as anyone who knows of this endpoint could write to the database. Imagine if I wrote a <code>delete</code> function! I thought surely Google must have built in some sort of authentication scheme for Cloud Functions. But after googling around for a while, it didn&#8217;t seem so. I did next what any clueless developer would, and <a href="https://stackoverflow.com/questions/46358013/secure-google-cloud-functions-http-trigger-with-auth">post a question on StackOverflow</a>.</p>
+			<p>After a few days, the answers I got back seemed pretty disappointing. Apparently if I had used AWS Lambda, I could leverage API Gateway, which has support for auth. But I am on my own for Google Cloud Functions.</p>
+			<p>So I decided to implement an authentication check for my cloud function with a JWT token passed in in the form of an Authorization header access token, with the help of Auth0.</p>
+			<p>Here&#8217;s the implementation in Node, and the explanation is after.</p>
+			<pre><code class="language-javascript">const jwksClient = require('jwks-rsa');
+			const jwt = require('jsonwebtoken');
+			
+			const client = jwksClient({
+			  cache: true,
+			  rateLimit: true,
+			  jwksRequestsPerMinute: 5,
+			  jwksUri: "https://.auth0.com/.well-known/jwks.json"
+			});
+			
+			function verifyToken(token, cb) {
+			  let decodedToken;
+			  try {
+			    decodedToken = jwt.decode(token, {complete: true});
+			  } catch (e) {
+			    console.error(e);
+			    cb(e);
+			    return;
+			  }
+			  client.getSigningKey(decodedToken.header.kid, function (err, key) {
+			    if (err) {
+			      console.error(err);
+			      cb(err);
+			      return;
+			    }
+			    const signingKey = key.publicKey || key.rsaPublicKey;
+			    jwt.verify(token, signingKey, function (err, decoded) {
+			      if (err) {
+			        console.error(err);
+			        cb(err);
+			        return
+			      }
+			      console.log(decoded);
+			      cb(null, decoded);
+			    });
+			  });
+			}
+			
+			function checkAuth (fn) {
+			  return function (req, res) {
+			    if (!req.headers || !req.headers.authorization) {
+			      res.status(401).send('No authorization token found.');
+			      return;
+			    }
+			    // expect authorization header to be
+			    // Bearer xxx-token-xxx
+			    const parts = req.headers.authorization.split(' ');
+			    if (parts.length != 2) {
+			      res.status(401).send('Bad credential format.');
+			      return;
+			    }
+			    const scheme = parts[0];
+			    const credentials = parts[1];
+			
+			    if (!/^Bearer$/i.test(scheme)) {
+			      res.status(401).send('Bad credential format.');
+			      return;
+			    }
+			    verifyToken(credentials, function (err) {
+			      if (err) {
+			        res.status(401).send('Invalid token');
+			        return;
+			      }
+			      fn(req, res);
+			    });
+			  };
+			}
+			</code></pre>
+			<div id="user-content-explanation"></div>
+			<p>I use <code>jwks-rsa</code> to retrieve the public key part of the key that was used to sign the JWT token, and <code>jsonwebtoken</code> to decode and verify the token. I use Auth0, so <code>jwks-rsa</code> reaches out to the list of public keys to retrieve them.</p>
+			<p>The <code>checkAuth</code> function can then be used to safeguard the cloud function as:</p>
+			<pre><code class="language-javascript">exports.get = checkAuth(function (req, res) {
+			  // do things safely here
+			});
+			</code></pre>
+			<p>You can see the entire Google Cloud Functions repo at <a href="https://github.com/tnguyen14/functions-datastore/">https://github.com/tnguyen14/functions-datastore/</a></p>
+			<p>The JWT / access token can be generated in a number of way. For Auth0, the API doc can be found at <a href="https://auth0.com/docs/api/authentication#authorize-client">https://auth0.com/docs/api/authentication#authorize-client</a></p>
+			<p>Once this is in place, the HTTP trigger cloud function can be invoked with:</p>
+			<pre><code class="language-bash">curl -X POST -H "Content-Type: application/json" \
+			-H "Authorization: Bearer access-token" \
+			-d '{"foo": "bar"}' \
+			"https://.cloudfunctions.net/get"
+			</code></pre>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/next-leg-nyc">Next leg: NYC</a></h2>
+					<div class="article-date">07-31-2017</div>
+			<p>This has been one of the hardest/ most terrifying decisions for me to make: leave a growing career at Demandware/ Salesforce Commerce Cloud and come to New York City and work for Bloomberg.</p>
+			<p>Now that I&#8217;ve been in New York for a few months, I&#8217;d like to jot down a few thoughts, so that I could look back on at some point in the future.</p>
+			<ul>
+			<li>One of the biggest reasons for leaving was to grow my career as a technical person. I was doing really well at Demandware, and I was getting comfortable. It is a great spot to be in. However, drawing from past experience, I figured that the most growth I undergo comes from putting myself in unfamiliar/ uncomfortable position. It&#8217;s hard. It sucks. And as the last few months of being in NYC indicates, it really does suck. But, I have also grown. I have been exposed to more technologies and more interesting ways of solving problems.</li>
+			<li>I had to restart my PERM application process all over again. At the time, I figured this would be a good thing &#8211; I still  have enough buffer time to do so. Looking back, I think perhaps it might have been wiser to stay on for another couple years and complete that.</li>
+			<li>Another reason was for Mark and I to experience a new lifestyle. Being in a big city, using public transportation, and most importantly, being more active with easier access to walking/ biking. This has been true. We do enjoy the new lifestyle. On the other hand, it has been dampened by the frustration of Mark&#8217;s job seeking process. Hopefully, this is only a temporary setback.</li>
+			<li>My parents are coming to visit for an extended period of time again this year. I&#8217;d like to be in a place where they can get out of the house on their own and explore. It seems like it shouldn&#8217;t be a factor in such a life-changing decision, but if I were honest with myself, I think this is definitely one of the reasons. After being away from home for 12+ years, I&#8217;d like to spend more quality time with them.</li>
+			<li>After being at Demandware for 3 years, I started to feel like I wasn&#8217;t progressing fast enough towards my career goals of being more involved in architecting applications (technical) and in building up teams (non-technical). I understood that I was (and still am) relatively inexperienced in either of those things. From the little I could deduce, those roles require more varied background and experiences. The role at Bloomberg isn&#8217;t exactly the big next step up, but I decided to make a leap of faith, hoping that it will add to the diversity of my experiences. This could turn out to be a mistake, who knows. After sharing my decision with the management at Demandware, it seemed like I had a chance to make a shortcut towards my goals with the company. That seemed like too little too late, and given the other reasons, I decided to let go of the leverage and made the jump.</li>
+			</ul>
+			<p>At this juncture, looking back, it is still a toss-up whether this decision has turned out to be the right one. I am going through a lot of challenges, both personally and professionally, that make me constantly question the move. I hope that in a year or so, the outlook on things will improve. I knew that it was a long-term investment that would require a bit of short-term pain. I should try to stay positive and see the rewards.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/til-linking">TIL &#8211; Linking</a></h2>
+					<div class="article-date">03-08-2017</div>
+			<p>I was unaware of the difference between static linking and dynamic linking in linux. Thankfully Ben Kelly explained to me in some details these concepts on a Slack chat. I wanted to document them here for future references.</p>
+			<blockquote><p>Static linking: when you link the program (the step after compilation that combines all the compiler outputs into a single runnable program), the linker tracks down the libraries the program needs and copies them into the final program file.</p>
+			<p>Dynamic linking: at link time, the linker merely records which libraries are needed, and when you run the program, the &#8220;dynamic linker&#8221; reads that information and runs around loading those libraries into memory and making them accessible to the program.</p>
+			<p>Advantage of the latter is smaller (potentially *much* smaller programs) and you can upgrade the libraries without rebuilding everything that uses them. Disadvantage is that those upgrades can break compatibility, and it&#8217;s another external dependency for the program (and thus another point of failure).</p>
+			<p>The dynamic linker has a bunch of ways it figures out where the libraries are stored; `man ld.so` for all the gory details.</p>
+			<p>But the tl;dr is that it has a few system paths it looks in (typically /lib and /usr/lib), plus whatever is listed in the environment variable LD_LIBRARY_PATH, plus whatever is recorded as the &#8220;rpath&#8221; in the executable itself.</p></blockquote>
+			
+				</article><!-- .post-single -->
+			
+			<div class="nav-link">
+					<a class="prev" href="/articles/5"><i class="fa fa-arrow-left"></i> Previous</a>
+					<a class="next" href="/articles/3">Next <i class="fa fa-arrow-right"></i></a>
+			</div>
+			
+			
+	</section><!-- .main-content -->
+		<footer class="main-footer">
+			<div class="social-networks">
+				<div class="twitter link">
+					<a href="https://twitter.com/tridnguyen" rel="me"><i class="fa fa-twitter"></i></a>
+				</div>
+				<div class="github link">
+					<a href="https://github.com/tnguyen14" rel="me"><i class="fa fa-github"></i></a>
+				</div>
+				<div class="linkedin link">
+					<a href="https://linkedin.com/in/triduynguyen" rel="me"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+			Built by Tri Nguyen using <a href="https://github.com/tnguyen14/tobiko">tobiko</a>. Copyrights ® 2025.
+		</footer>
+		<script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="/lib/bxslider/jquery.bxSlider.min.js"></script>
+		<script type="text/javascript" src="/lib/prism/prism.js"></script>
+		<script type="text/javascript">
+			var page = {
+				env: ""
+			};
+		</script>
+		<script type="text/javascript" src="/js/app.js"></script>
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			
+			  ga('create', 'UA-26482928-1', 'tridnguyen.com');
+			  ga('send', 'pageview');
+			
+			</script>	</body>
+</html>

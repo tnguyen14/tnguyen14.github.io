@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript">
+		WebFontConfig = {
+			google: { families: [ 'Source+Code+Pro::latin', 'Source+Sans+Pro:400,400italic:latin', 'Merriweather:400,700:latin' ] }
+		};
+		(function() {
+			var wf = document.createElement('script');
+			wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+				'://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+			wf.type = 'text/javascript';
+			wf.async = 'true';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(wf, s);
+		})();
+	</script>
+	<title>Home | Tri Nguyen</title>
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+	<div class="main-header">
+		<nav class="main-nav" role="navigation">
+			<ul class="main-menu">
+				<li><a href="https://tridnguyen.com"><i class="fa fa-home"></i>Home</a></li>
+			</ul><!-- .main-menu -->
+		</nav><!-- .main-nav -->
+		<div class="about">
+			<img class="personal" alt="Tri wearing headphones focusing on work" title="Tri Nguyen" src="/images/at_upstatement.jpg"/>
+			<h1 class="site-title">Tri Nguyen</h1>
+			<h2 class="site-tagline">Strongly opinionated, but what do I know?</h2>
+		</div><!-- .about -->
+	</div><!-- .main-header -->
+	<section class="main-content">
+	<article class="post-single">
+		<h2 class="article-title"><a href="/articles/set-up-google-cloud-workload-identity-federation-for-github-actions">Set up Google Cloud Workload Identity Federation for GitHub Actions</a></h2>
+		<div class="article-date">05-26-2025</div>
+
+<p>I have been using Service Account Key JSON to authenticate GitHub Actions with Google Cloud. This is basically a password stored in GitHub secrets that is then used by GitHub Actions to authenticate. I just saw that the <code>google-github-actions/auth</code> action now supports and recommends the use of Workload Identity Federation. This post is a documentation of the steps I took to enable this.</p>
+
+
+
+<p>The <a href="https://github.com/google-github-actions/auth/blob/main/README.md" data-type="link" data-id="https://github.com/google-github-actions/auth/blob/main/README.md">doc</a> suggests the Direct setup, where you&#8217;d grant permissions to the Workload Identity Pool to access different Google Cloud services. Since I have been using the Service Account, I set up <a href="https://github.com/google-github-actions/auth/blob/main/README.md#workload-identity-federation-through-a-service-account" data-type="link" data-id="https://github.com/google-github-actions/auth/blob/main/README.md#workload-identity-federation-through-a-service-account">Workload Identity Federation through a Service Account</a> instead. I performed these steps in the Google Cloud console, instead of using the gcloud CLI as in the doc.</p>
+
+
+
+<ol class="wp-block-list">
+<li>Create a Workload Identity Pool
+<ul class="wp-block-list">
+<li>From the UI, the &#8220;Name&#8221; field is actually the <code>display-name</code> attribute of the CLI. The ID is automatically derived, so I edited it to use the <code>github</code> value instead.</li>
+</ul>
+</li>
+
+
+
+<li>Create a Workload Identity Provider
+<ul class="wp-block-list">
+<li>Select OpenID Connect (OIDC)</li>
+
+
+
+<li>Same deal as above re: display name and ID</li>
+
+
+
+<li>Issuer URL is <a href="https://token.actions.githubusercontent.com"><code>https://token.actions.githubusercontent.com</code></a></li>
+
+
+
+<li>I selected &#8220;Default Audience&#8221;</li>
+
+
+
+<li>Attribute mapping &#8211; manually set them
+<ul class="wp-block-list">
+<li><code>google.subject</code> &#8211; <code>assertion.sub</code></li>
+
+
+
+<li><code>attribute.actor</code> &#8211; <code>assertion.actor</code></li>
+
+
+
+<li><code>attribute.repository</code> &#8211; <code>assertion.repository</code></li>
+
+
+
+<li><code>attribute.repository_owner</code> &#8211; <code>assertion.repository_owner</code></li>
+</ul>
+</li>
+
+
+
+<li>Attribute conditions &#8211; set to my GitHub personal user
+<ul class="wp-block-list">
+<li><code>assertion.repository_owner == 'tnguyen14'</code></li>
+</ul>
+</li>
+</ul>
+</li>
+
+
+
+<li>Allow authentications from the Pool to the Service Account
+<ul class="wp-block-list">
+<li>This step is where I deviated slightly from the doc. I selected the option &#8220;Grant access using service account impersonation&#8221; from the UI, and select the Service Account.</li>
+
+
+
+<li>For the &#8220;Select principals (identities that can access the service account)&#8221; field, I selected <code>repository_owner</code> instead of <code>repository</code>, as suggested by the doc. My intention is to use this Provider for all repos in my personal account, so I hope this is the right way to do it. The Actions workflow succeeded with this setting, FWIW.</li>
+</ul>
+</li>
+
+
+
+<li>Retrieve the Provider name
+<ul class="wp-block-list">
+<li>This info is not available from the Console UI for it, so I had to activate Cloud Shell to retrieve it from the CLI</li>
+</ul>
+</li>
+
+
+
+<li>Changes to workflow config file
+<ul class="wp-block-list">
+<li>In the job, update permissions &#8211; this step is important. Without it, I got the error <code>Error: google-github-actions/auth failed with: gitHub Actions did not inject $ACTIONS_ID_TOKEN_REQUEST_TOKEN or $ACTIONS_ID_TOKEN_REQUEST_URL into this job. This most likely means the GitHub Actions workflow permissions are incorrect, or this job is being run from a fork.</code><pre class="wp-block-code language-yaml"><code>permissions:
+  contents: 'read'
+  id-token: 'write'</code></pre></li>
+
+
+
+<li>Replace the auth step&#8217;s <code>credentials_json</code> with <code>workload_identity_provider</code> and <code>service_account</code><br><pre class="wp-block-code language-yaml"><code>- id: auth
+  uses: google-github-actions/auth@v2
+  with:
+    workload_identity_provider: projects/xxx/locations/global/workloadIdentityPools/github/providers/github-tnguyen14
+    service_account: github-actions@project-id.iam.gserviceaccount.com</code></pre></li>
+</ul>
+</li>
+</ol>
+
+	</article><!-- .post-single -->
+	<article class="post-single">
+		<h2 class="article-title"><a href="/articles/a-simple-bug-when-using-redux-toolkit-that-took-me-a-while-to-figure-out">A simple bug when using Redux Toolkit that took me a while to figure out</a></h2>
+		<div class="article-date">01-07-2024</div>
+
+<p>I have been using React and redux for a few years, and got quite comfortable with building moderately complex component logic with them. I recently migrated an app over to using Redux Toolkit, motivated by wanting to stay up to date with the latest recommendation, as well as reducing boilerplate, which can be cumbersome with redux action creators and reducers.</p>
+
+
+
+<p>When using Redux Toolkit, often times you&#8217;d need to declare <code>extraReducers</code> to act upon actions defined in a different slice. That would look like so</p>
+
+
+<pre class="wp-block-code language-jsx"><code>const asyncAction = createAsyncThunk(
+  'async/action',
+  async (foo) =&gt; {
+    await doAsync();
+    return 42;
+  }
+)
+
+const form = createSlice({
+  name: 'form'
+  initialState,
+  reducers: {
+    ...
+  },
+  extraReducers: (builder) =&gt; {
+    builder.addCase(actionOne, (state, action) =&gt; {
+    })
+    .addMatcher((action) =&gt; [
+      actionTwo.type,
+      actionThree.type,
+      asyncAction.fulfilled.type
+    ].includes(action.type), (state) =&gt; {})
+  }
+});</code></pre>
+
+
+<p>You would use <code>addMatcher</code> to match on multiple action types. This does become a bit verbose, so <code>redux-toolkit</code> does provide a helper function called <code>isAnyOf</code> to make this a bit easier</p>
+
+
+<pre class="wp-block-code language-js"><code>builder.addMatcher(isAnyOf(
+  actionTwo,
+  actionThree,
+  asyncAction.fulfilled
+), (state) =&gt; {});</code></pre>
+
+
+<p>This is pretty straightforward. However, in the process of doing the refactoring to use the helper, I made a mistake of forgetting to remove the .type attribute on the action</p>
+
+
+<pre class="wp-block-code language-js"><code>builder.addMatcher(isAnyOf(
+  actionTwo.type,
+  actionThree.type,
+  asyncAction.fulfilled
+), (state) =&gt; {});</code></pre>
+
+
+<p>This might have been simple bug to fix had I known where to look. However, it manifested in a pretty strange behavior, where the matcher would match even when a different action is fired. This caused a pretty confusing behavior in my case, due to an inadvertent state logic:</p>
+
+
+<pre class="wp-block-code language-js"><code>const initialState = {
+  loading: false,
+};
+const form = createSlice({
+  name: 'form',
+  initialState,
+  reducers: {
+    submit: (state) =&gt; {
+      state.loading = true;
+    }
+  },
+  extraReducers: (builder) =&gt; {
+    builder.addMatcher(
+      isAnyOf(
+        submitFailure.type,
+        validationFailure.type,
+        refresh.fulfilled
+    ), (state) =&gt; {
+      state.loading = false;
+    });
+  };
+});</code></pre>
+
+
+<p>So I was in a situation where, upon calling the <code>submit</code> action, I can see that the action was fired, but the <code>loading</code> state did not become <code>true</code>. From just reading the code, it would never occur to me that the matcher in the <code>extraReducers</code> was invoked. This was especially tricky to realize, because the actual code contains many more lines of complex logic and a high number of reducers to parse through. It is still unclear to me why the <code>isAnyOf</code> matcher would behave that way. I suspect it has to do with the fact that the helper can accommodate many different types of arguments. I wonder if TypeScript check would have caught this issue here. </p>
+
+	</article><!-- .post-single -->
+	<article class="post-single">
+		<h2 class="article-title"><a href="/articles/til-git-aliases-are-case-insensitive">TIL &#8211; git aliases are case-insensitive</a></h2>
+		<div class="article-date">04-03-2022</div>
+
+<p>Today I learned that git aliases are case-insensitive &#8211; this behavior is documented in <a href="http://git-scm.com/docs/git-config#_configuration_file">http://git-scm.com/docs/git-config#_configuration_file</a>.</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow"><p>The configuration variables are used by both the Git plumbing and the porcelains. The variables are divided into sections, wherein the fully qualified variable name of the variable itself is the last dot-separated segment and the section name is everything before the last dot. The variable names are case-insensitive, allow only alphanumeric characters and <code>-</code>, and must start with an alphabetic character.</p></blockquote>
+
+
+
+<p>For quite a long time, I noticed a strange behavior in my local git environment (which uses a dotfile config <a href="https://github.com/tnguyen14/dotfiles/blob/master/home/.gitconfig">https://github.com/tnguyen14/dotfiles/blob/master/home/.gitconfig</a>). When a branch has not been merged, git would usually shows me a warning like this:</p>
+
+
+
+<pre class="wp-block-code langauge-bash"><code>:; git branch -d my-feature-branch
+error: The branch 'my-feature-branch' is not fully merged.
+If you are sure you want to delete it, run 'git branch -D my-feature-branch'.
+</code></pre>
+
+
+
+<p>I find this behavior helpful, cautioning me against accidentally deleting branches and losing work. Because I do branch deletion often, I add then following config to <code>~/.gitconfig</code>:</p>
+
+
+
+<pre class="wp-block-code"><code>&#91;alias]
+  bd = branch -d</code></pre>
+
+
+
+<p>However, I started noticing that when I do <code>git bd my-branch</code>, it would just delete the branch regardless of whether I have the branch changes merged or not. This went on for a while, and eventually it bothered me enough to look into while. I finally figured it out today. This is happening because I have another alias in gitconfig:</p>
+
+
+
+<pre class="wp-block-code"><code>&#91;alias]
+  bd = branch -d
+  ...
+  bD = branch -D</code></pre>
+
+
+
+<p>I suppose that when I was setting up aliases, I was trying to be clever and added a convenient alias for when I do want to force-delete the branch. As aliases are case-sensitive, the latter one (<code>branch -D</code>) wins and is always used whenever I type <code>git bd</code>.</p>
+
+	</article><!-- .post-single -->
+	<article class="post-single">
+		<h2 class="article-title"><a href="/articles/enable-ssh-into-windows-server-with-cloud-init">Enable SSH into Windows Server with cloud-init</a></h2>
+		<div class="article-date">12-02-2021</div>
+
+<p>When I had to bring up a Windows Server on AWS using the default Windows Server AMI recently, I needed a way to automatically configure the machine so it can be SSH-ed into without manual configuration. This was needed in order to run ansible on the machine after it was brought up by Terraform.<br></p>
+
+
+
+<p>This could be done with cloud-init and a PowerShell script. The script would install OpenSSH server and configure the permissions for the <code>authorized_keys</code> file to allow incoming SSH session for the <code>Administrator</code> user.</p>
+
+
+
+<pre class="wp-block-code"><code>&lt;powershell>
+Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+Start-Service sshd
+Set-Service -Name sshd -StartupType 'Automatic'
+
+$AuthorizedKeyFile = 'C:\ProgramData\ssh\administrators_authorized_keys'
+New-Item $AuthorizedKeyFile
+Set-Content $AuthorizedKeyFile '${authorized_keys}'
+
+# Reset authorized_keys file ACL to enable SSH
+# By default, it inherits parent folder permission, which is too permissive
+
+$Acl = Get-Acl -Path $AuthorizedKeyFile
+
+# disable inheritance
+$isProtected = $true
+$preserveInheritance = $false
+$Acl.SetAccessRuleProtection($isProtected, $preserveInheritance)
+
+$Administrators = 'BUILTIN\Administrators'
+$System = 'SYSTEM'
+$FullControl = 'FullControl'
+
+$AdministratorAccessRule = New-Object Security.AccessControl.FileSystemAccessRule $Administrators, $FullControl, 'Allow'
+$SystemAccessRule = New-Object Security.AccessControl.FileSystemAccessRule $System, $FullControl, 'Allow'
+
+$Acl.SetAccessRule($AdministratorAccessRule)
+$Acl.SetAccessRule($SystemAccessRule)
+
+Set-Acl -Path $AuthorizedKeyFile -AclObject $Acl
+&lt;/powershell></code></pre>
+
+
+
+<p>The local machine&#8217;s public SSH key is added to <code>authorized_keys</code> file as a template parameter.</p>
+
+	</article><!-- .post-single -->
+
+<div class="nav-link">
+		<a class="prev" href="/articles/2"><i class="fa fa-arrow-left"></i> Previous</a>
+</div>
+
+
+	</section><!-- .main-content -->
+		<footer class="main-footer">
+			<div class="social-networks">
+				<div class="twitter link">
+					<a href="https://twitter.com/tridnguyen" rel="me"><i class="fa fa-twitter"></i></a>
+				</div>
+				<div class="github link">
+					<a href="https://github.com/tnguyen14" rel="me"><i class="fa fa-github"></i></a>
+				</div>
+				<div class="linkedin link">
+					<a href="https://linkedin.com/in/triduynguyen" rel="me"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+			Built by Tri Nguyen using <a href="https://github.com/tnguyen14/tobiko">tobiko</a>. Copyrights ® 2025.
+		</footer>
+		<script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="/lib/bxslider/jquery.bxSlider.min.js"></script>
+		<script type="text/javascript" src="/lib/prism/prism.js"></script>
+		<script type="text/javascript">
+			var page = {
+				env: ""
+			};
+		</script>
+		<script type="text/javascript" src="/js/app.js"></script>
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			
+			  ga('create', 'UA-26482928-1', 'tridnguyen.com');
+			  ga('send', 'pageview');
+			
+			</script>	</body>
+</html>

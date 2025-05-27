@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript">
+		WebFontConfig = {
+			google: { families: [ 'Source+Code+Pro::latin', 'Source+Sans+Pro:400,400italic:latin', 'Merriweather:400,700:latin' ] }
+		};
+		(function() {
+			var wf = document.createElement('script');
+			wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+				'://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+			wf.type = 'text/javascript';
+			wf.async = 'true';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(wf, s);
+		})();
+	</script>
+	<title>Articles | Tri Nguyen</title>
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+	<div class="main-header">
+		<nav class="main-nav" role="navigation">
+			<ul class="main-menu">
+				<li><a href="https://tridnguyen.com"><i class="fa fa-home"></i>Home</a></li>
+			</ul><!-- .main-menu -->
+		</nav><!-- .main-nav -->
+		<div class="about">
+			<img class="personal" alt="Tri wearing headphones focusing on work" title="Tri Nguyen" src="/images/at_upstatement.jpg"/>
+			<h1 class="site-title">Tri Nguyen</h1>
+			<h2 class="site-tagline">Strongly opinionated, but what do I know?</h2>
+		</div><!-- .about -->
+	</div><!-- .main-header -->
+	<section class="main-content">
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/tinhnguyenlonghoa-org-launched">tinhnguyenlonghoa.org launched!</a></h2>
+					<div class="article-date">03-18-2013</div>
+			<p><a href="http://tinhnguyenlonghoa.org">tinhnguyenlonghoa.org</a> has finally launched this past week.</p>
+			<p>It is my first work for a non-profit, and I am very proud to do my part and help out a friend. I&#x2019;ve known Minh, the project director, for a while. We did a community service trip in Vietnam together more than 4 years ago, not too different from Long Hoa. Since then I&#x2019;ve gained a lot of respect for him and his dedication to community service.</p>
+			<p>This site features a simple, minimal design with a focus on pictures as a way to tell the story. Here are some nice aspects of the site:</p>
+			<ul>
+			<li>Simple, minimal and <strong>responsive</strong> design.</li>
+			<li>Responsive <strong>image sliders</strong> integrated with <strong>lightbox</strong> &#x2013; I want the audience to be able to easily browse through the images &#x2013; the main assets of the site &#x2013; and at the same time look at them in more details.</li>
+			<li>Integration with <strong>Facebook</strong>, including a Like box and Comments. The project&#x2019;s Facebook page has been the main driver for social outreach, and it should continue leveraging that strength.</li>
+			<li>Friendly <strong>content management</strong> backend, relying on the powerful WordPress admin, coupled with Advanced Custom Fields and other great plugins.</li>
+			</ul>
+			<p>This is also my first site in Vietnamese, which imposes an interesting restriction on fonts. There are only 3 fonts from <a href="http://www.google.com/fonts">Google Web Fonts</a> that fully support the Vietnamese characters. I lucked out as Open Sans, my favorite font, supports the Vietnamese language.</p>
+			<p>Working with Minh has been a very pleasant experience. He is always on top with his part of the project, providing content and images very early on. This allowed me to have a good grasp on the content and design to maximize their impact. He is also flexible in working with me in developing solutions for various ideas.</p>
+			<p>There are certain areas of the site that could be further optimized/ revisited for better performance and user experience. Hopefully these will be tackled on soon as the site gains more traffic and has more user testing.</p>
+			<p>This site is also the first to be hosted with <a href="http://pagodabox.com/">pagodabox</a> (wow! there are many firsts with this project!). I really like the object-oriented approach to hosting and the version control (<code>git</code>) built in from the start. However, I had to jump through a few hoops to get WordPress working correctly on there, such as configuring writable directories, syncing with local development (.htaccess for permalink) or WP Super Cache plugin &#x2013; these warrant their own post.</p>
+			<p>Enjoy looking through the site (my apologies in advance for the cryptic and weird Google Translation &#x2013; Google definitely needs to work on their translation machine for English &#x2013; Vietnamese) and let me know if you have any suggestions/ comments.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/user-friendly-input-type-date-and-input-typetime">User-friendly input[type=date] and input[type=time]</a></h2>
+					<div class="article-date">02-18-2013</div>
+			<p>To make a HTML form easier and friendlier for users to use, HTML5 incorporates quite a few <a href="http://www.html5rocks.com/en/tutorials/forms/html5forms/#toc-inputs-attributes-types">new input types</a>. While <code>url</code>, <code>tel</code> and <code>email</code> types have been quite useful when using a mobile device (special keyboard layouts), I find the biggest pain point is with input date and time. Most of the times you don&#x2019;t know what format to input the date in (month first or date first), whether you should use dash versus slash, whether you should include the year etc. <span class="more"></span></p>
+			<p>Many solutions have been used to solve this problem. jQuery plugins <a href="http://jqueryui.com/datepicker/">datepicker</a> and <a href="http://jonthornton.github.com/jquery-timepicker/">timepicker</a> are really helpful on desktop. Mobile browsers have done a good job using native date and time picker (Android and iOS) when the input type is specified.</p>
+			<p>How do we combine both of these solutions to create a single responsive web form? The answer is really simple.</p>
+			<p>My first response was to just call the <code>datepicker()</code> method on any and all <code>input[type=date]</code> elements.</p>
+			<pre><code class="javascript">jQuery( document ).ready( function( $ ) {
+						  $( &apos;input[type=date]&apos; ).each( function() {
+						    $( this ).datepicker();
+						  } );
+						} );
+						</code></pre>
+			<p>There is a few problems associated with this:</p>
+			<ul>
+			<li><code>input[type=date]</code> does not work very well with datepicker. That means whatever value you select using the datepicker will not be registered on the input field.</li>
+			<li><code>datepicker()</code> is not very useful on mobile devices. The pop up window isn&#x2019;t the most user friendly thing.</li>
+			</ul>
+			<p>In order to solve these two problems, the answer would be to:</p>
+			<ol>
+			<li>Use <code>input[type=text]</code> on desktop as well as call <code>datepicker()</code> method.</li>
+			<li>Use <code>input[type=date]</code> on mobile (touch-enabled) devices and not call <code>datepicker()</code>.</li>
+			</ol>
+			<p>This can be achieved using <a href="http://modernizr.com/">Modernizr</a> to detect whether the device is touch-enabled, and JavaScript to swap out the <code>input[type=date]</code> element with one of type text.</p>
+			<p>This could be done with the following snippet:</p>
+			<pre><code class="javascript">if ( !$( &apos;html&apos; ).hasClass( &apos;touch&apos; ) ){
+						    $( &apos;input[type=date]&apos; ).each( function() {
+						        $( this ).clone().attr( &apos;type&apos;, &apos;text&apos; ).insertAfter( this ).datepicker().prev().remove();
+						    } );
+						}
+						</code></pre>
+			<p>This code basically copies the input element, converts it to <code>input[type=text]</code>, calls the <code>datepicker()</code> method on it and then removes the previous element.</p>
+			<p>Admittedly, this method seems like a bit of a hack. At least it will be until jQuery UI datepicker plugin is updated to work with <code>input[type=date]</code>. After that, we can just use Modernizr to selectively call it on desktop browsers without having to do the whole copy and remove business.</p>
+			<p>Give credit where credit is due: the clone/ remove code is not originally mine. I found it on <a href="http://stackoverflow.com/a/12617534/1368032">stackoverflow</a>. I modified it a little bit to make it work with my situation.</p>
+			<p>Here&#x2019;s a codepen I set up to demo this.</p>
+			<pre class="codepen"><code></code><a href="http://codepen.io/tnguyen14/pen/nhbql">Check out this Pen!</a></pre>
+			</p>
+			<p>The example I&#x2019;ve used is for <code>datepicker()</code>. <code>timepicker()</code> should also work in a similar way.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/happy-tet">Happy Tet</a></h2>
+					<div class="article-date">02-10-2013</div>
+			<p>That awesome feeling of a 3 day weekend when its only Saturday and it feels like Sunday, aka the most miserable day of the week in my book, and you realized you still have one more day at home.</p>
+			<p>While most people hate the blizzard and the snow, I actually kinda love it. I&#x2019;m a little sad now that all the snowing is over. I love waking up in the morning and see everything covered in snow. I guess I&#x2019;m one of those rare people who genuinely love winter and the snow. And yes, I do a lot of shoveling too today, and more tomorrow, and I actually don&#x2019;t seem to mind it.</p>
+			<p>It is now officially Vietnamese new year, aka Tet! Although sometimes I wonder if it counts to wait till Eastern Time, since the lunar calendar is only used in Asia.</p>
+			<p>At any rate, Happy New Year to everyone! Have a safe, peaceful, prosperous and blessed year of the snake!</p>
+			<p><img decoding="async" src="http://i2.wp.com/wp.tridnguyen.com/wp-content/uploads/2014/11/medford-snow.jpg?w=840" alt="Snow in Medford"></p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/creativity-cannot-be-taught">Creativity cannot be taught</a></h2>
+					<div class="article-date">01-29-2013</div>
+			<p>In this video, John Cleese explains how we all can achieve some creativity in our daily life, and does so with a great sense of humor and conviction. This is perhaps one of the best speeches I&#x2019;ve listened to this year (and considering that January is only closing, there&#x2019;s not much competition). As one of the commenters said, if this was on TED, it would be one of the most popular one.</p>
+			</p>
+			<p>Some of the great ideas I gleaned from watching this, although to be honest any sentence said by him in this talk is quote-worthy, including the lightbulb jokes, are that <em>It is easier to do small things we know how to do that are urgent than to do big things that we&#x2019;re unsure of, like thinking</em> and <em>Some of the most creative people are able to stick with a problem longer and deal with the discomfort, than those who are supposed to be &#x201C;decisive&#x201D;</em>. These ideas resonate well with me in my daily life.</p>
+			<p>P/S: You can&#x2019;t help but like a guy who has such a cute and cool website <a href="http://www.thejohncleese.com/">www.thejohncleese.com</a>. The best part is that it was made with WordPress too!</p>
+			
+				</article><!-- .post-single -->
+			
+			<div class="nav-link">
+					<a class="prev" href="/articles/11"><i class="fa fa-arrow-left"></i> Previous</a>
+					<a class="next" href="/articles/9">Next <i class="fa fa-arrow-right"></i></a>
+			</div>
+			
+			
+	</section><!-- .main-content -->
+		<footer class="main-footer">
+			<div class="social-networks">
+				<div class="twitter link">
+					<a href="https://twitter.com/tridnguyen" rel="me"><i class="fa fa-twitter"></i></a>
+				</div>
+				<div class="github link">
+					<a href="https://github.com/tnguyen14" rel="me"><i class="fa fa-github"></i></a>
+				</div>
+				<div class="linkedin link">
+					<a href="https://linkedin.com/in/triduynguyen" rel="me"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+			Built by Tri Nguyen using <a href="https://github.com/tnguyen14/tobiko">tobiko</a>. Copyrights ® 2025.
+		</footer>
+		<script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="/lib/bxslider/jquery.bxSlider.min.js"></script>
+		<script type="text/javascript" src="/lib/prism/prism.js"></script>
+		<script type="text/javascript">
+			var page = {
+				env: ""
+			};
+		</script>
+		<script type="text/javascript" src="/js/app.js"></script>
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			
+			  ga('create', 'UA-26482928-1', 'tridnguyen.com');
+			  ga('send', 'pageview');
+			
+			</script>	</body>
+</html>

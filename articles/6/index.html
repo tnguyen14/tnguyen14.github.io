@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript">
+		WebFontConfig = {
+			google: { families: [ 'Source+Code+Pro::latin', 'Source+Sans+Pro:400,400italic:latin', 'Merriweather:400,700:latin' ] }
+		};
+		(function() {
+			var wf = document.createElement('script');
+			wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+				'://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+			wf.type = 'text/javascript';
+			wf.async = 'true';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(wf, s);
+		})();
+	</script>
+	<title>Articles | Tri Nguyen</title>
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+	<div class="main-header">
+		<nav class="main-nav" role="navigation">
+			<ul class="main-menu">
+				<li><a href="https://tridnguyen.com"><i class="fa fa-home"></i>Home</a></li>
+			</ul><!-- .main-menu -->
+		</nav><!-- .main-nav -->
+		<div class="about">
+			<img class="personal" alt="Tri wearing headphones focusing on work" title="Tri Nguyen" src="/images/at_upstatement.jpg"/>
+			<h1 class="site-title">Tri Nguyen</h1>
+			<h2 class="site-tagline">Strongly opinionated, but what do I know?</h2>
+		</div><!-- .about -->
+	</div><!-- .main-header -->
+	<section class="main-content">
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/a-sense-of-peace">A sense of peace</a></h2>
+					<div class="article-date">10-28-2015</div>
+			<p>As I was laying in bed tonight, for some reason I thought of the time when I went back to Vietnam about more than three years ago. My first night there was at my uncle&#x2019;s place, where I slept on the floor. Even though I wasn&#x2019;t at my own house, that night&#x2019;s sleep felt very peaceful. It is a sense of peace that I haven&#x2019;t felt in a long time.</p>
+			<p>I guess it was partly because I was on vacation from school. But more importantly, I was in a place where I belonged, where I didn&#x2019;t feel threatened, and where my status wasn&#x2019;t constantly in question and needed to be validated.</p>
+			<p>Being here in the US has been a blessing in many ways, and will continue to be. But I think this sense of peace, or lack thereof, will continue to haunt me for quite a while.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/how-i-get-started-on-using-vim-part-1-my-vimrc-explained">How I get started on using Vim, part 1 – my .vimrc explained</a></h2>
+					<div class="article-date">10-12-2015</div>
+			<p>For some reason, I’ve had it in my head that as a programmer, I should learn how to use a command-line-based text editor like Vim. It is more universal across devices, so knowing it would at least give me an option to navigate around computers other than my own, is an advice I often hear. It would be more applicable if I were an ops person, but on the infrequent (though increasingly less so) occasions that I have to remotely log in into a server box, I do find that to be true. Furthermore, since for most codebases I deal with, I already have a terminal window open for git and build tools, I figure keeping text editing in the same context will be beneficial.</p>
+			<p>I tend to agree with <a href="http://yehudakatz.com/2010/07/29/everyone-who-tried-to-convince-me-to-use-vim-was-wrong/">Yehuda Katz’s experience learning Vim</a>, that it is something one should learn incrementally. I started down this path almost two years ago, only to decide on several occasions that it wasn’t the right tool for me. It is not until very recently that I feel comfortable enough to use it as my primary text editor. Even then, there are times when I find myself opening up Sublime Text or Atom because they’re more appropriate for what I need to do.</p>
+			<p>What allowed me to be more comfortable in Vim is less about learning the shortcuts and muscle memory, but more the heavy customization that I have put on top of Vim to give it the convenience editors like Sublime have out of the box, and also the deeper insight into how Vim actually works.</p>
+			<p>I have been thinking about writing this blog post for a while, but never felt like I was ready to have an “authority” on this topic. But I decided today that it’s time I break down and explain my Vim setup (through the <code>.vimrc</code> file) before it gets too complicated.</p>
+			<p>To me, the most fundamental difference between Vim and a GUI editor like Sublime is that <strong>Vim is a modal editor</strong>. That means Vim has different “modes” that a user could be in at any given time. In Sublime, you’re always in edit mode. Anything you type on the keyboard is recorded in the text buffer. Other actions, such as saving, linting or navigating, are done through special key combinations, such as <code></code> key on Windows or <code>Cmd</code> key on OS X. In Vim, the default mode is <code>NORMAL</code>, which is where you can do most of these “meta” actions on the document, without modifying the text itself. You need to explicitly enter the <code>INSERT</code> mode to edit something, and escape out of it to perform those actions. Being aware of the current active mode is important, and will help beginners feel less confused and lost. You can make vim show the mode with the command <code>:set showmode</code> while in <code>NORMAL</code> mode, or see the <code>.vimrc</code> breakdown to see how to set that permanently.</p>
+			<p>The second most powerful difference in Vim as compared to a GUI editor is the concept of <strong>motions</strong>, or <strong>text objects</strong>. There are a lot of great tutorials and resources out there explaining this. I find <a href="http://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/">Vim Text Objects: The Definitive Guide</a> to be a really great place to start, as it was the “ah ha!” moment for me. This way of moving around a document is probably what makes Vim much more appealing and efficient for me.</p>
+			<p>As I walk through my <code>.vimrc</code> setup, I will denote the ones that I think are basic developer use as <code>[basic]</code>, so search for those if you just want a quick way to get started with Vim. My <code>.vimrc</code> file actually changes quite often as I refine the setup, so take a look at the <a href="https://github.com/tnguyen14/dotfiles/blob/master/home/.vimrc">source code</a> to see the latest version. Here goes:</p>
+			<ul>
+			<li>An explanation of <a href="http://stackoverflow.com/questions/5845557/in-a-vimrc-is-set-nocompatible-completely-useless">what this actually does/ why it’s necessary</a>
+			<pre><code>set nocompatible</code></pre>
+			</li>
+			<li>This whole big chunk is about <a href="https://github.com/VundleVim/Vundle.vim">Vundle</a>, one of the most popular Vim plugin managers out there. There are a few, but I find Vundle to be the most consistent across all plugins I come across, and it has worked really well for me.
+			<pre><code class="language-vim">" Vundle
+			filetype off
+			" set the runtime path to include Vundle and initialize
+			set rtp+=~/.vim/bundle/Vundle.vim
+			call vundle#begin()
+			
+			" Let Vundle manage Vundle
+			Plugin 'gmarik/Vundle.vim'
+			Plugin 'chriskempson/base16-vim'
+			Plugin 'tpope/vim-fugitive'
+			Plugin 'airblade/vim-gitgutter'
+			Plugin 'tpope/vim-commentary'
+			Plugin 'wincent/command-t'
+			Plugin 'editorconfig/editorconfig-vim'
+			Plugin 'scrooloose/nerdtree'
+			Plugin 'Xuyuanp/nerdtree-git-plugin'
+			Plugin 'pangloss/vim-javascript'
+			Plugin 'bling/vim-airline'
+			Plugin 'kien/ctrlp.vim'
+			Plugin 'mustache/vim-mustache-handlebars'
+			Plugin 'Raimondi/delimitMate'
+			Plugin 'Yggdroot/indentLine'
+			Plugin 'othree/html5.vim'
+			Plugin 'wincent/terminus'
+			Plugin 'scrooloose/syntastic'
+			Plugin 'Valloric/YouCompleteMe'
+			Plugin 'rking/ag.vim'
+			Plugin 'cakebaker/scss-syntax.vim'
+			Plugin 'hail2u/vim-css3-syntax'
+			Plugin 'ap/vim-css-color'
+			Plugin 'ryanoasis/vim-devicons'
+			Plugin 'elzr/vim-json'
+			Plugin 'tmux-plugins/vim-tmux-focus-events'
+			Plugin 'tmux-plugins/vim-tmux'
+			Plugin 'tpope/vim-surround'
+			Plugin 'moll/vim-bbye'
+			call vundle#end()
+			</code></pre>
+			<p>In order to install a new plugin, I just append it to the end of this list, then run 2 commands (in Normal mode): <code>:source ~/.vimrc</code> and <code>:PluginInstall</code>. Removing one is just the opposite, and <code>PluginClean</code> instead of install.</li>
+			<li>I like the dark <a href="https://github.com/chriskempson/base16">Tomorrow Night/ base16</a> syntax theme, so that’s what I set up here. I use the same theme for Sublime, Atom as well as the terminal.
+			<pre><code class="language-vim">set background=dark
+			let base16colorspace=256  " Access colors present in 256 colorspace"
+			colorscheme base16-tomorrow</code></pre>
+			<p>Here’s a screenshot of what my Vim setup looks like visually:<br />
+			<a href="http://i2.wp.com/wp.tridnguyen.com/wp-content/uploads/2015/10/Screen-Shot-2015-10-12-at-12.44.22-AM.png"><img decoding="async" class="alignnone size-medium wp-image-138" src="http://i2.wp.com/wp.tridnguyen.com/wp-content/uploads/2015/10/Screen-Shot-2015-10-12-at-12.44.22-AM.png?resize=600%2C328" alt="vim-screenshot" /></a></li>
+			<li>[basic] This next chunk includes convenience settings that make working with Vim friendlier, especially to someone who’s more comfortable with a GUI editor like me. I have inline comments to explain what each of the configuration does, including some external links for more thorough explanation.
+			<pre><code class="language-vim">" Allow saving of files as sudo when forgot to start vim using sudo
+			cmap w!! w !sudo tee &gt; /dev/null %
+			" Enable syntax highlighting
+			syntax on
+			
+			" File type based indentation
+			filetype plugin indent on
+			" Show what mode you're currently in
+			set showmode
+			" Show what commands you're typing
+			set showcmd
+			" Allow modelines
+			" http://vim.wikia.com/wiki/Modeline_magic
+			set modeline
+			" Show current line and column position in file
+			set ruler
+			" Show file title in terminal tab
+			set title
+			" Show line numbers
+			set number
+			" Always display the status line
+			set laststatus=2
+			" Highlight current line
+			set cursorline
+			" Highlight search results as we type
+			set incsearch
+			" ignore case when searching...
+			set ignorecase
+			" ...except if we input a capital letter
+			set smartcase
+			
+			" hides buffer instead of closing them
+			" http://usevim.com/2012/10/19/vim101-set-hidden/
+			set hidden
+			
+			" Tab stuff
+			set tabstop=4
+			set shiftwidth=4
+			set autoindent
+			</code></pre>
+			</li>
+			<li>One of the things I like about Sublime Text is its sensible default for whitespace/invisible characters. The setting above tries to imitate some of that to make it feel more familiar.
+			<pre><code class="language-vim">
+			" Show invisible characters
+			set list
+			set listchars=tab:→ ,trail:·,eol:˧</code></pre>
+			</li>
+			<li>[basic] Sublime makes it really easy to split windows and have things side by side. Vim has very good support for that too, but the default shortcut of requiring <code>&lt;C-W&gt;</code>, which means pressing <code>control-w</code> keys before every action, is rather clunky. These mappings making it more fun to navigate around the different panes you have open in Vim.
+			<pre><code class="language-vim">" Set split pane direction to be more natural
+			set splitbelow
+			set splitright
+			
+			" Buffer navigation
+			noremap &lt;Leader&gt;] :bnext&lt;CR&gt;
+			noremap &lt;Leader&gt;[ :bprev&lt;CR&gt;
+			
+			" bbye remap to w
+			noremap &lt;Leader&gt;w :Bdelete&lt;CR&gt;
+			
+			" Navigate panes with control
+			nnoremap &lt;C-H&gt; &lt;C-W&gt;&lt;C-H&gt;
+			nnoremap &lt;C-J&gt; &lt;C-W&gt;&lt;C-J&gt;
+			nnoremap &lt;C-K&gt; &lt;C-W&gt;&lt;C-K&gt;
+			nnoremap &lt;C-L&gt; &lt;C-W&gt;&lt;C-L&gt;
+			</code></pre>
+			<p>If you’re lost of the difference between panes/ windows/ buffers, you’re not alone. I’m still confused as hell about them. Throw tabs in the mix and it gets complicated real quick. I find this explanation on <a href="https://joshldavis.com/2014/04/05/vim-tab-madness-buffers-vs-tabs/">buffers vs. tabs</a> to be quite informative. I’m convinced for now to just stick with buffers with the help of <a href="https://github.com/bling/vim-airline#smarter-tab-line">airline plugin’s tabline feature</a>, which keeps things simpler and more aligned with Sublime’s way of handling things.</li>
+			<li>[basic] This is perhaps the most important key mapping in the entire .vimrc file 😉.
+			<pre><code class="language-vim">
+			" remap : to ; to avoid pressing Shift
+			nnoremap ; :
+			vnoremap ; :
+			</code></pre>
+			<p>Since many Vim commands in Normal mode start with <code>:</code>, my right pinky gets quite a bit of stretching. If I don’t let go of the Shift key in time, I accidentally uppercase the command a lot, which gets annoying. Mapping <code>;</code> to <code>:</code> eliminates the need to press Shift. However, it does take a bit of practice to get used to this, if you’re already used to typing the colon.</li>
+			<li>Another mapping to save the pinky 🙌.
+			<pre><code class="language-vim">
+			" remap  key
+			let mapleader = '\&lgt;Space&gt;'
+			</code></pre>
+			<p>The &lt;Leader&gt; key is now the space bar, instead of the default <code></code> key, which is just way out there.. The spacebar is also convenient for both thumbs to press.</li>
+			<li>These are plugin-specific settings that make these powerful plugins behave more intuitively.
+			<pre><code class="language-vim">
+			" airline
+			let g:airline#extensions#tabline#enabled = 1
+			" Show just the filename
+			let g:airline#extensions#tabline#fnamemod = ':t'
+			
+			" NERDTree
+			let NERDTreeShowHidden = 1
+			let NERDTreeMapOpenSplit = '&lt;C-x&gt;'
+			let NERDTreeMapOpenVSplit = '&lt;C-v&gt;'
+			let NERDTreeMapOpenInTab = '&lt;C-t&gt;'
+			" open NERDTree automatically on vim start, even if no file is specified
+			autocmd StdinReadPre * let s:std_in=1
+			autocmd VimEnter * if argc() == 0 &amp;&amp; !exists("s:std_in") | NERDTree | endif
+			" open NERDTree with `Ctrl-n`
+			map &lt;C-n&gt; :NERDTreeToggle&lt;CR&gt;
+			
+			" Syntastic recommended settings
+			set statusline+=%#warningmsg#
+			set statusline+=%{SyntasticStatuslineFlag()}
+			set statusline+=%*
+			
+			let g:syntastic_always_populate_loc_list = 1
+			let g:syntastic_auto_loc_list = 1
+			let g:syntastic_check_on_open = 1
+			let g:syntastic_check_on_wq = 0
+			
+			let g:syntastic_html_tidy_ignore_errors=[" proprietary attribute " ,"trimming empty &lt;", "unescaped &amp;" , "lacks "action", "is not recognized!", "discarding unexpected"]
+			
+			" make ESC key work for command-t
+			if &amp;term =~ "xterm" || &amp;term =~ "screen"
+			    let g:CommandTCancelMap = ['&lt;ESC&gt;', '&lt;C-c&gt;']
+			endif
+			
+			" Disable JSON quote concealing
+			let g:vim_json_syntax_conceal = 0
+			
+			" ctrlp
+			" show hidden files
+			let g:ctrlp_show_hidden = 1
+			
+			" ycm
+			" &lt;Enter&gt; key completion
+			let g:ycm_key_list_select_completion = ['&lt;TAB&gt;', '&lt;Down&gt;', '&lt;Enter&gt;']
+			</code></pre>
+			</li>
+			</ul>
+			<p>While plugins and basic setup establish a friendlier stage for a beginner to Vim to start exploring around, one of the most frustrating things when trying Vim out is not knowing how to do basic developer tasks in Vim. In addition to the “[basic]” setup I have outlined here, I will document more of what those tasks are, such as find/replace, copy/paste, indentation etc. in the second part of this series.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/foray-into-irc-with-the-help-of-znc">Foray into IRC, with the help of ZNC</a></h2>
+					<div class="article-date">10-07-2015</div>
+			<h3>Why IRC?</h3>
+			<p>As someone relatively new to the developers scene, I&#x2019;ve been rather intimidated by chatting on IRC. I used it a couple times in the past in order to get some help on open-source projects, and those experiences were at the most confusing. There is usually a lot of noise, so it&#x2019;s difficult to keep track of what&#x2019;s going on. This problem is exacerbated by the fact that most IRC clients do not keep track of history, so if for some reason you&#x2019;re disconnected from a chat, say you need to close your computer for a while or your network fails, there is no way to retrieve what was said during that downtime.</p>
+			<p>I tried out <a href="http://www.irccloud.com">irccloud</a>, and it was a pretty good option. With the free plan, I am&#xA0;able to stay connected for up to 2 hours after I&#xA0;become inactive, which definitely helps with the scenario described above. I mostly use IRC on my desktop, but the irccloud mobile apps come in pretty handy if I need to step out for a bit. On the desktop, the only option is to use the webapp, which has desktop notification, and since I use my email as webapps anyway, I didn&#x2019;t mind it too much.</p>
+			<h3>What is ZNC?</h3>
+			<p>Recently, I&#x2019;ve been more interested in doing some <a href="https://github.com/Kickball/awesome-selfhosted">self-hosting</a>, and IRC seems like an interesting experiment to try that out with. More specifically, I wanted to try hosting my own IRC bouncer. I had no idea what that means before, until somebody on the <a href="http://lgbtq.technology/">LGBTQ Slack</a> chat mentioned <a href="http://znc.in">ZNC</a>, an IRC bouncer. Basically, it is a middle man between your IRC client and the IRC server. Instead of connecting to the IRC server directly, you connect it the bouncer, which then relays you to the server. If you become disconnected, the bouncer will stay connected and maintain a buffer of messages while you&#x2019;re gone, and allow you to catch up later. By default, the size of this buffer is 50, which I think is most likely sufficient for IRC (just enough to provide you with the context of the current conversation), but you can definitely increase&#xA0;this size to be whatever you want.</p>
+			<p>Just like most things related to IRC, the ZNC website contains a lot of useful information, but not the friendliest for the absolute beginners. So with this post, I want to detail my experience setting it up from scratch with very little knowledge on how it all works. I spent quite a bit of time figuring it out on my own, so I hope it will be useful and save someone else some of their precious time.</p>
+			<h3>Run ZNC with docker</h3>
+			<p>First, I decided to not install and run ZNC as the website instructed, but instead running it with docker. This way, it is more contained and repeatable, so I had some room to make mistakes with. I&#x2019;ve been <a href="http://tridnguyen.com/articles/simple-heroku-like-workflow-with-git-and-docker-compose/">into the whole docker workflow</a> lately. Thanks to <a href="https://hub.docker.com/r/jimeh/znc/"><code>jimeh/znc</code></a> image, this setup is quite simplified. After installing docker on your host (in this case, I am using a Digital Ocean droplet), you can pull this image down and run the container:</p>
+			<pre><code class="language-bash">
+			:; docker pull jimeh/znc  # this step is optional
+			:; docker run -d --name znc -p 6667:6667 -v $HOME/.znc:/znc-data jimeh/znc
+			</code></pre>
+			<p>What each of the flag does:</p>
+			<ul>
+			<li><code>-d</code> runs the container in the background</li>
+			<li><code>--name znc</code> gives the container the name <code>znc</code></li>
+			<li><code>-p 6667:6667</code> this is a <code>host:container</code> port mapping, forwarding port <code>6667</code> from the container to port <code>6667</code> on the host</li>
+			<li><code>-v $HOME/.znc:/znc-data</code> mount the directory <code>$HOME/.znc</code> from the host to volume <code>/znc-data</code> on the container. This helps persist the data, so if you need to stop and start a new container, all your settings are saved.</li>
+			</ul>
+			<p><em>Note: I use port <code>6667</code> here, while the doc for <code>jimeh/znc</code> shows an example of <code>36667</code>. Either option would work, as you can specify which port to connect to from your client. Most clients default to port 6667, so I chose it for convenience. There&#x2019;s a slight problem with this choice however &#x2013; in the next step, when configuring ZNC at <code>http://host-ip:6667</code>, this page will not appear on Chrome as port 6667 is blocked. However, the&#xA0;ZNC server can still be accesssed on a different browser, such as Firefox.</em></p>
+			<h3 id="configure-znc-server">Configure ZNC server</h3>
+			<p>Now that we&#xA0;have ZNC running, we&#xA0;can start configuring it by going to <code>http://host-ip:6667</code>, where <code>host-ip</code> is the address of the&#xA0;host machine, and <code>6667</code> is the port on the host machine that we&#xA0;set in the docker run command above.</p>
+			<p>Log in with the username/password combination is <code>admin/admin</code>. You&#x2019;re advised to create your own administrator user:</p>
+			<blockquote>
+			<p>I&#x2019;d recommend you create your own user by cloning the admin user, then ensure your new cloned user is set to be an admin user. Once you login with your new user go ahead and delete the default admin user.</p>
+			</blockquote>
+			<p>Once logged in, you can add an IRC server for ZNC to connect to, such as <code>freenode</code>.</p>
+			<ul>
+			<li>Go to &#x201C;webadmin&#x201D; -&gt; &#x201C;Your Settings&#x201D;, scroll to the &#x201C;Networks&#x201D; section and select &#x201C;Add&#x201D;.</li>
+			<li>Enter the &#x201C;Network Name&#x201D;, &#x201C;Ident&#x201D;, &#x201C;Nickname&#x201D; and &#x201C;Realname&#x201D; as desired. I am not sure what the difference between Ident and Nickname is, but it seems that Ident is something that is used to identify you with the server, and cannot be changed unless you reconnect, while the nickname is displayed to other members and can be changed with the <code>/nick</code> command.</li>
+			<li>In the &#x201C;Servers of this IRC network&#x201D; field, you can enter the address, such as <code>irc.freenode.net 6667</code> for freenode.</li>
+			<li>You can select certain modules to be used for this server, such as &#x201C;nickserv&#x201D; or &#x201C;simple_away&#x201D;.</li>
+			<li>Hit &#x201C;Add Network&#x201D; and you&#x2019;re done.</li>
+			</ul>
+			<p>You can now add a list of channels you want to be able to connect to through the ZNC interface. You can also just join any channel with the command <code>/join #channel-name</code> from the IRC client, and ZNC will create these channels for you. Once you have a list of channels you belong to, you can change the size of buffer (to something other than 50) from the ZNC interface.</p>
+			<p>That is it. Now you can start using IRC through your ZNC bouncer and enjoying benefits such as the message buffer. To be completely honest, I am still pretty much a noob when it comes to ZNC. I am sure there are a lot of super amazing features you could do with ZNC to make your IRC experience better. If you know of some of these, please let me know! I would love to learn.</p>
+			<h3>Set up IRC client with Textual</h3>
+			<p>There are many IRC clients out there, include <a href="https://weechat.org/">WeeChat</a>, a CLI client. I went with <a href="https://www.codeux.com/textual/">Textual</a> as it is highly recommended and has support for ZNC bouncer built in. It is not a free app however, though its cost is not too high ($4.99 right now).</p>
+			<p>Once you open Textual, add a new server and fill out the fields under the &#x201C;General&#x201D; tab as follows:</p>
+			<ul>
+			<li>I have the &#x201C;Connection Name&#x201D; set as &#x201C;ZNC/Freenode&#x201D; to tell me where I am connected to.</li>
+			<li>&#x201C;Server Address&#x201D; should be the <code>host-ip</code> address from above.</li>
+			<li>&#x201C;Port&#x201D; defaults to 6667, though you can change it to whatever port you configure as when you run the docker container.</li>
+			<li>&#x201C;Server Password&#x201D; field is a little tricky &#x2013; it should be constructed as <code>&lt;username&gt;/&lt;network&gt;:&lt;password&gt;</code>, where:
+			<ul>
+			<li><code>&lt;username&gt;</code> is the ZNC username</li>
+			<li><code>&lt;network&gt;</code> is the Network Name when you set up the server on ZNC</li>
+			<li><code>&lt;password&gt;</code> is the ZNC password</li>
+			</ul>
+			</li>
+			</ul>
+			<p>In the &#x201C;Identity&#x201D; tab, you can have &#x201C;Username&#x201D; set as <code>&lt;username&gt;/&lt;network&gt;</code>, while &#x201C;Nickname&#x201D; can be whatever nick name you desire.</p>
+			<p>If your channel requires your nickname to be registered with a password, you can do it with this command:</p>
+			<pre><code>/msg NickServ REGISTER &lt;password&gt; &lt;email&gt;</code></pre>
+			<p>Later on, when you connect again, you can identify yourself with:</p>
+			<pre><code>/msg NickServ IDENTIFY &lt;nickname&gt; &lt;password&gt;</code></pre>
+			<h3>Bonus: connect to gitter through IRC and ZNC</h3>
+			<p>An alternative to IRC for Github-hosted open-source projects that has been growing in popularity is <a href="https://gitter.im">gitter</a>. It overcomes a lot of IRC limitations with some impressive features, such as full message history, markdown syntax support for writing messages (back ticks are amazing for writing code blocks), message editing and deleting etc. Some open-source projects have been adopting it, such as AmpersandJS. While I like using it, I do not particularly like how to desktop app (which is essentially a wrapper around the webapp) constantly displays an unread badge and I cannot seem to be able to hide it. This is too distracting for me. Thankfully, there is a way to actually connect to gitter via an IRC client, thanks to <a href="https://irc.gitter.im/">irc.gitter.im</a>. This allows me to&#xA0;group gitter chats with regular IRC channels.</p>
+			<p>We can use our ZNC bouncer to connect to the irc.gitter.im server, and then our IRC client like Textual can just connect to the ZNC server.</p>
+			<p>First, you need to get the gitter token (from the irc.gitter.im page).</p>
+			<p>Then, add gitter as a network on your ZNC server. This is essentially the same as the <a href="#configure-znc-server">steps outlined above</a>, with a few differences:</p>
+			<ul>
+			<li>Your &#x201C;Nickname&#x201D; should be your Github username.</li>
+			<li>The IRC server address should be <code>irc.gitter.im +6667 &lt;token&gt;</code>.</li>
+			</ul>
+			<p>The steps to&#xA0;connect from Textual is exactly the same as before, since ZNC already took care of authentication with gitter. The only difference is that you need to set the Nickname as your Github username.</p>
+			<p>These days, I have the Textual app open in the background and it automatically connects to the ZNC server. I am not active on any IRC channel, as I much prefer using something like Slack, but it&#x2019;s kinda fun to pop in and see what&#x2019;s going on. I would keep a few channels that I care about open, such as #node.js, #docker, #AmpersandJS/AmpersandJS or #w3c/a11ySlackers. I still think that IRC is rather intimidating, and its interface outdated and not very user-friendly. However, I find the idea of connecting to many others around the world who care about the same topic with such low barrier to entry to be quite powerful. That is I am investing some time and effort into making it as pleasant an experience as possible.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/simple-heroku-like-workflow-with-git-and-docker-compose">Simple Heroku-like workflow with git and docker compose</a></h2>
+					<div class="article-date">09-13-2015</div>
+			<p>Inspired by Aria&#x2019;s post about <a href="http://aredridel.dinhe.net/2015/08/08/introducing-git-create-deploy-branch/">simple deployment with git</a> using a new feature in git 2.3.0 <code>receive.denyCurrentBranch = updateInstead</code>, I have been experimenting with putting together a Heroku-like workflow (i.e. deploy with just <code>git push heroku master</code>) with just git and docker.</p>
+			<p>Since Heroku just comprises of a compute worker and a bunch of services that are accessible to the main process through environment variables, it fits quite nicely with the docker ecosystem. Specifically, the setup can be achieved quite seamlessly with <a href="https://docs.docker.com/compose/">docker-compose</a>.</p>
+			<p>The primary reason that I wanted to move away from Heroku is cost. Most of what I do is just at the hobby level, but with Heroku&#x2019;s recent changes to their pricing, my hobby app will be forced to sleep if it runs for more than 18 hours a day. It seems reasonable, but I kept running into issue with an app that is pinged every 10 minutes through a cron job.</p>
+			<p>For this new setup, I use Digital Ocean as the hosting provider. It isn&#x2019;t exactly free either, but for $5-10/ month, I could host all of my hobby apps. Also, I was already paying for the droplet for running a couple other services.</p>
+			<h3>Setup</h3>
+			<h4>Docker Compose</h4>
+			<p>You develop your app as per usual. Then add a <code>docker-compose.yml</code> file to declare all the different services that your app might rely on (the main suspect is usually a database component). Even if your app only comprises of a single container, you can still use docker-compose to run it. The reason for using compose is that it has a feature called <a href="https://youtu.be/Dzp6CGMyRwQ?t=1136">smart recreate</a> that will only rebuild a container if its configuration has changed.</p>
+			<p>Here&#x2019;s an example docker-compose.yml file I have for a node application:</p>
+			<pre><code class="language-yaml">
+			app:
+			  build: .
+			  links:
+			    - db:mongodb
+			  environment:
+			    PORT: 3000
+			  ports:
+			    - &quot;3000:3000&quot;
+			
+			db:
+			  image: mongo
+			  volumes:
+			    - ./data/db:/data/db
+			</code></pre>
+			<h4>Git</h4>
+			<p>On the hosting server, create a new git repository that will serve as your remote. For example:</p>
+			<pre><code class="language-bash">:; git init myapp
+			:; cd myapp
+			:; git config receive.denyCurrentBranch updateInstead</code></pre>
+			<p>This will allow the remote repo to accept push updates.</p>
+			<p>Now, back on the local machine, add the new remote:</p>
+			<pre><code>:; git remote add do ssh://droplet-ip/path-to-remote-myapp</code></pre>
+			<ul>
+			<li><code>do</code> &#x2013; name of the git remote &#x2013; it can be anything we want it to be</li>
+			<li><code>droplet-ip</code> &#x2013; IP address of the remote hosting server, in this case a digital ocean droplet</li>
+			</ul>
+			<p>Lastly, the remote git repository needs to be configured to run <code>docker-compose up -d</code> every time it receives a push update. This can be simply achieved with git hooks:</p>
+			<pre><code class="language-bash">:; cd myapp
+			:; cd .git/hooks
+			:; touch post-update
+			:; chmod +x post-update</code></pre>
+			<p><code>post-update</code> file should have the following content in it:</p>
+			<pre><code class="language-bash">
+			#!/usr/bin/env bash
+			
+			docker-compose build
+			docker-compose up -d</code></pre>
+			<p>With this setup, every time we make change to our app locally, we can simply deploy it with</p>
+			<pre><code>:; git push do</code></pre>
+			<h3>WordPress</h3>
+			<p>This setup can be used with any application stack out there. I have been able to use this quite successfully with setting up a WordPress site as well. Using the same instructions described above, here&#x2019;s a sample <code>docker-compose.yml</code> file I use for a WordPress instance.</p>
+			<pre><code class="language-yaml">
+			wordpress:
+			  image: wordpress
+			  external_links:
+			    - wordpress_db:mysql
+			  environment:
+			    WORDPRESS_DB_NAME: wp_blog
+			  volumes:
+			    - .:/var/www/html/wp-content/themes/mytheme
+			    - ./uploads:/var/www/html/wp-content/uploads
+			    - ./plugins:/var/www/html/wp-content/plugins
+			  ports:
+			    - &quot;5000:80&quot;
+			</code></pre>
+			<p>A couple of notes here:</p>
+			<ul>
+			<li>An external mysql database container already running outside of this compose setup is used here, which explains the <code>external_links</code> instead of the usual <code>links</code>.</li>
+			<li>The current working directory is mounted as the theme for the installation.</li>
+			<li>Directories <code>uploads</code> and <code>plugins</code> are mounted to store any uploaded media content and plugins installed for this WordPress site. This is so that any data is persisted even if the container is killed. These two directories are therefore <code>.gitignore</code>-ed.</li>
+			</ul>
+			<p>In this setup, <code>docker-compose up -d</code> step is only needed to be run once once. Since the container is running just the stock WordPress iamge, it doesn&#x2019;t need to be rebuilt with every code change. The <code>post-update</code> git hook is still used however for running an npm build step for compiling <code>css</code> and <code>js</code> assets for the theme:</p>
+			<pre><code class="language-bash">
+			#!/usr/bin/env bash
+			npm prune &amp;&amp; npm install
+			npm run build</code></pre>
+			<p>I used to use VVV for my local WordPress setup, but after switching over to using docker, I can now truly guarantee that the ways my site is run locally and in production are the same. The set up is also much simpler. I can focus on working on the theme, which is my main goal. Everything else is scripted and automated.</p>
+			<h3>Conclusion</h3>
+			<p>This new set up is very refreshing to me, as it greatly simplifies the deployment process. It is also readily scalable by using docker out of the box. The best part however is that I get to control every part of the process and not rely on some opaque architecture, like Heroku&#x2019;s. All of this is achieved with very little sysadmin overhead tasks on my part.</p>
+			
+				</article><!-- .post-single -->
+			
+			<div class="nav-link">
+					<a class="prev" href="/articles/7"><i class="fa fa-arrow-left"></i> Previous</a>
+					<a class="next" href="/articles/5">Next <i class="fa fa-arrow-right"></i></a>
+			</div>
+			
+			
+	</section><!-- .main-content -->
+		<footer class="main-footer">
+			<div class="social-networks">
+				<div class="twitter link">
+					<a href="https://twitter.com/tridnguyen" rel="me"><i class="fa fa-twitter"></i></a>
+				</div>
+				<div class="github link">
+					<a href="https://github.com/tnguyen14" rel="me"><i class="fa fa-github"></i></a>
+				</div>
+				<div class="linkedin link">
+					<a href="https://linkedin.com/in/triduynguyen" rel="me"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+			Built by Tri Nguyen using <a href="https://github.com/tnguyen14/tobiko">tobiko</a>. Copyrights ® 2025.
+		</footer>
+		<script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="/lib/bxslider/jquery.bxSlider.min.js"></script>
+		<script type="text/javascript" src="/lib/prism/prism.js"></script>
+		<script type="text/javascript">
+			var page = {
+				env: ""
+			};
+		</script>
+		<script type="text/javascript" src="/js/app.js"></script>
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			
+			  ga('create', 'UA-26482928-1', 'tridnguyen.com');
+			  ga('send', 'pageview');
+			
+			</script>	</body>
+</html>

@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript">
+		WebFontConfig = {
+			google: { families: [ 'Source+Code+Pro::latin', 'Source+Sans+Pro:400,400italic:latin', 'Merriweather:400,700:latin' ] }
+		};
+		(function() {
+			var wf = document.createElement('script');
+			wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+				'://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+			wf.type = 'text/javascript';
+			wf.async = 'true';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(wf, s);
+		})();
+	</script>
+	<title>Foray into IRC, with the help of ZNC | Tri Nguyen</title>
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+	<div class="main-header">
+		<nav class="main-nav" role="navigation">
+			<ul class="main-menu">
+				<li><a href="https://tridnguyen.com"><i class="fa fa-home"></i>Home</a></li>
+			</ul><!-- .main-menu -->
+		</nav><!-- .main-nav -->
+		<div class="about">
+			<img class="personal" alt="Tri wearing headphones focusing on work" title="Tri Nguyen" src="/images/at_upstatement.jpg"/>
+			<h1 class="site-title">Tri Nguyen</h1>
+			<h2 class="site-tagline">Strongly opinionated, but what do I know?</h2>
+		</div><!-- .about -->
+	</div><!-- .main-header -->
+	<section class="main-content">
+		<div class="post-single">
+			<h1>Foray into IRC, with the help of ZNC</h1>
+			<div class="article-date">10-07-2015</div>
+<h3>Why IRC?</h3>
+<p>As someone relatively new to the developers scene, I&#x2019;ve been rather intimidated by chatting on IRC. I used it a couple times in the past in order to get some help on open-source projects, and those experiences were at the most confusing. There is usually a lot of noise, so it&#x2019;s difficult to keep track of what&#x2019;s going on. This problem is exacerbated by the fact that most IRC clients do not keep track of history, so if for some reason you&#x2019;re disconnected from a chat, say you need to close your computer for a while or your network fails, there is no way to retrieve what was said during that downtime.</p>
+<p>I tried out <a href="http://www.irccloud.com">irccloud</a>, and it was a pretty good option. With the free plan, I am&#xA0;able to stay connected for up to 2 hours after I&#xA0;become inactive, which definitely helps with the scenario described above. I mostly use IRC on my desktop, but the irccloud mobile apps come in pretty handy if I need to step out for a bit. On the desktop, the only option is to use the webapp, which has desktop notification, and since I use my email as webapps anyway, I didn&#x2019;t mind it too much.</p>
+<h3>What is ZNC?</h3>
+<p>Recently, I&#x2019;ve been more interested in doing some <a href="https://github.com/Kickball/awesome-selfhosted">self-hosting</a>, and IRC seems like an interesting experiment to try that out with. More specifically, I wanted to try hosting my own IRC bouncer. I had no idea what that means before, until somebody on the <a href="http://lgbtq.technology/">LGBTQ Slack</a> chat mentioned <a href="http://znc.in">ZNC</a>, an IRC bouncer. Basically, it is a middle man between your IRC client and the IRC server. Instead of connecting to the IRC server directly, you connect it the bouncer, which then relays you to the server. If you become disconnected, the bouncer will stay connected and maintain a buffer of messages while you&#x2019;re gone, and allow you to catch up later. By default, the size of this buffer is 50, which I think is most likely sufficient for IRC (just enough to provide you with the context of the current conversation), but you can definitely increase&#xA0;this size to be whatever you want.</p>
+<p>Just like most things related to IRC, the ZNC website contains a lot of useful information, but not the friendliest for the absolute beginners. So with this post, I want to detail my experience setting it up from scratch with very little knowledge on how it all works. I spent quite a bit of time figuring it out on my own, so I hope it will be useful and save someone else some of their precious time.</p>
+<h3>Run ZNC with docker</h3>
+<p>First, I decided to not install and run ZNC as the website instructed, but instead running it with docker. This way, it is more contained and repeatable, so I had some room to make mistakes with. I&#x2019;ve been <a href="http://tridnguyen.com/articles/simple-heroku-like-workflow-with-git-and-docker-compose/">into the whole docker workflow</a> lately. Thanks to <a href="https://hub.docker.com/r/jimeh/znc/"><code>jimeh/znc</code></a> image, this setup is quite simplified. After installing docker on your host (in this case, I am using a Digital Ocean droplet), you can pull this image down and run the container:</p>
+<pre><code class="language-bash">
+:; docker pull jimeh/znc  # this step is optional
+:; docker run -d --name znc -p 6667:6667 -v $HOME/.znc:/znc-data jimeh/znc
+</code></pre>
+<p>What each of the flag does:</p>
+<ul>
+<li><code>-d</code> runs the container in the background</li>
+<li><code>--name znc</code> gives the container the name <code>znc</code></li>
+<li><code>-p 6667:6667</code> this is a <code>host:container</code> port mapping, forwarding port <code>6667</code> from the container to port <code>6667</code> on the host</li>
+<li><code>-v $HOME/.znc:/znc-data</code> mount the directory <code>$HOME/.znc</code> from the host to volume <code>/znc-data</code> on the container. This helps persist the data, so if you need to stop and start a new container, all your settings are saved.</li>
+</ul>
+<p><em>Note: I use port <code>6667</code> here, while the doc for <code>jimeh/znc</code> shows an example of <code>36667</code>. Either option would work, as you can specify which port to connect to from your client. Most clients default to port 6667, so I chose it for convenience. There&#x2019;s a slight problem with this choice however &#x2013; in the next step, when configuring ZNC at <code>http://host-ip:6667</code>, this page will not appear on Chrome as port 6667 is blocked. However, the&#xA0;ZNC server can still be accesssed on a different browser, such as Firefox.</em></p>
+<h3 id="configure-znc-server">Configure ZNC server</h3>
+<p>Now that we&#xA0;have ZNC running, we&#xA0;can start configuring it by going to <code>http://host-ip:6667</code>, where <code>host-ip</code> is the address of the&#xA0;host machine, and <code>6667</code> is the port on the host machine that we&#xA0;set in the docker run command above.</p>
+<p>Log in with the username/password combination is <code>admin/admin</code>. You&#x2019;re advised to create your own administrator user:</p>
+<blockquote>
+<p>I&#x2019;d recommend you create your own user by cloning the admin user, then ensure your new cloned user is set to be an admin user. Once you login with your new user go ahead and delete the default admin user.</p>
+</blockquote>
+<p>Once logged in, you can add an IRC server for ZNC to connect to, such as <code>freenode</code>.</p>
+<ul>
+<li>Go to &#x201C;webadmin&#x201D; -&gt; &#x201C;Your Settings&#x201D;, scroll to the &#x201C;Networks&#x201D; section and select &#x201C;Add&#x201D;.</li>
+<li>Enter the &#x201C;Network Name&#x201D;, &#x201C;Ident&#x201D;, &#x201C;Nickname&#x201D; and &#x201C;Realname&#x201D; as desired. I am not sure what the difference between Ident and Nickname is, but it seems that Ident is something that is used to identify you with the server, and cannot be changed unless you reconnect, while the nickname is displayed to other members and can be changed with the <code>/nick</code> command.</li>
+<li>In the &#x201C;Servers of this IRC network&#x201D; field, you can enter the address, such as <code>irc.freenode.net 6667</code> for freenode.</li>
+<li>You can select certain modules to be used for this server, such as &#x201C;nickserv&#x201D; or &#x201C;simple_away&#x201D;.</li>
+<li>Hit &#x201C;Add Network&#x201D; and you&#x2019;re done.</li>
+</ul>
+<p>You can now add a list of channels you want to be able to connect to through the ZNC interface. You can also just join any channel with the command <code>/join #channel-name</code> from the IRC client, and ZNC will create these channels for you. Once you have a list of channels you belong to, you can change the size of buffer (to something other than 50) from the ZNC interface.</p>
+<p>That is it. Now you can start using IRC through your ZNC bouncer and enjoying benefits such as the message buffer. To be completely honest, I am still pretty much a noob when it comes to ZNC. I am sure there are a lot of super amazing features you could do with ZNC to make your IRC experience better. If you know of some of these, please let me know! I would love to learn.</p>
+<h3>Set up IRC client with Textual</h3>
+<p>There are many IRC clients out there, include <a href="https://weechat.org/">WeeChat</a>, a CLI client. I went with <a href="https://www.codeux.com/textual/">Textual</a> as it is highly recommended and has support for ZNC bouncer built in. It is not a free app however, though its cost is not too high ($4.99 right now).</p>
+<p>Once you open Textual, add a new server and fill out the fields under the &#x201C;General&#x201D; tab as follows:</p>
+<ul>
+<li>I have the &#x201C;Connection Name&#x201D; set as &#x201C;ZNC/Freenode&#x201D; to tell me where I am connected to.</li>
+<li>&#x201C;Server Address&#x201D; should be the <code>host-ip</code> address from above.</li>
+<li>&#x201C;Port&#x201D; defaults to 6667, though you can change it to whatever port you configure as when you run the docker container.</li>
+<li>&#x201C;Server Password&#x201D; field is a little tricky &#x2013; it should be constructed as <code>&lt;username&gt;/&lt;network&gt;:&lt;password&gt;</code>, where:
+<ul>
+<li><code>&lt;username&gt;</code> is the ZNC username</li>
+<li><code>&lt;network&gt;</code> is the Network Name when you set up the server on ZNC</li>
+<li><code>&lt;password&gt;</code> is the ZNC password</li>
+</ul>
+</li>
+</ul>
+<p>In the &#x201C;Identity&#x201D; tab, you can have &#x201C;Username&#x201D; set as <code>&lt;username&gt;/&lt;network&gt;</code>, while &#x201C;Nickname&#x201D; can be whatever nick name you desire.</p>
+<p>If your channel requires your nickname to be registered with a password, you can do it with this command:</p>
+<pre><code>/msg NickServ REGISTER &lt;password&gt; &lt;email&gt;</code></pre>
+<p>Later on, when you connect again, you can identify yourself with:</p>
+<pre><code>/msg NickServ IDENTIFY &lt;nickname&gt; &lt;password&gt;</code></pre>
+<h3>Bonus: connect to gitter through IRC and ZNC</h3>
+<p>An alternative to IRC for Github-hosted open-source projects that has been growing in popularity is <a href="https://gitter.im">gitter</a>. It overcomes a lot of IRC limitations with some impressive features, such as full message history, markdown syntax support for writing messages (back ticks are amazing for writing code blocks), message editing and deleting etc. Some open-source projects have been adopting it, such as AmpersandJS. While I like using it, I do not particularly like how to desktop app (which is essentially a wrapper around the webapp) constantly displays an unread badge and I cannot seem to be able to hide it. This is too distracting for me. Thankfully, there is a way to actually connect to gitter via an IRC client, thanks to <a href="https://irc.gitter.im/">irc.gitter.im</a>. This allows me to&#xA0;group gitter chats with regular IRC channels.</p>
+<p>We can use our ZNC bouncer to connect to the irc.gitter.im server, and then our IRC client like Textual can just connect to the ZNC server.</p>
+<p>First, you need to get the gitter token (from the irc.gitter.im page).</p>
+<p>Then, add gitter as a network on your ZNC server. This is essentially the same as the <a href="#configure-znc-server">steps outlined above</a>, with a few differences:</p>
+<ul>
+<li>Your &#x201C;Nickname&#x201D; should be your Github username.</li>
+<li>The IRC server address should be <code>irc.gitter.im +6667 &lt;token&gt;</code>.</li>
+</ul>
+<p>The steps to&#xA0;connect from Textual is exactly the same as before, since ZNC already took care of authentication with gitter. The only difference is that you need to set the Nickname as your Github username.</p>
+<p>These days, I have the Textual app open in the background and it automatically connects to the ZNC server. I am not active on any IRC channel, as I much prefer using something like Slack, but it&#x2019;s kinda fun to pop in and see what&#x2019;s going on. I would keep a few channels that I care about open, such as #node.js, #docker, #AmpersandJS/AmpersandJS or #w3c/a11ySlackers. I still think that IRC is rather intimidating, and its interface outdated and not very user-friendly. However, I find the idea of connecting to many others around the world who care about the same topic with such low barrier to entry to be quite powerful. That is I am investing some time and effort into making it as pleasant an experience as possible.</p>
+
+					<div id="disqus_thread"></div>
+					<script type="text/javascript">
+						/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+						var disqus_shortname = 'tridnguyen'; // required: replace example with your forum shortname
+				
+						/* * * DON'T EDIT BELOW THIS LINE * * */
+						(function() {
+							var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+							dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+							(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+						})();
+					</script>
+					<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+					<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+		</div>
+	</section><!-- .main-content -->
+		<footer class="main-footer">
+			<div class="social-networks">
+				<div class="twitter link">
+					<a href="https://twitter.com/tridnguyen" rel="me"><i class="fa fa-twitter"></i></a>
+				</div>
+				<div class="github link">
+					<a href="https://github.com/tnguyen14" rel="me"><i class="fa fa-github"></i></a>
+				</div>
+				<div class="linkedin link">
+					<a href="https://linkedin.com/in/triduynguyen" rel="me"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+			Built by Tri Nguyen using <a href="https://github.com/tnguyen14/tobiko">tobiko</a>. Copyrights ® 2025.
+		</footer>
+		<script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="/lib/bxslider/jquery.bxSlider.min.js"></script>
+		<script type="text/javascript" src="/lib/prism/prism.js"></script>
+		<script type="text/javascript">
+			var page = {
+				env: ""
+			};
+		</script>
+		<script type="text/javascript" src="/js/app.js"></script>
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			
+			  ga('create', 'UA-26482928-1', 'tridnguyen.com');
+			  ga('send', 'pageview');
+			
+			</script>	</body>
+</html>

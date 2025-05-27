@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript">
+		WebFontConfig = {
+			google: { families: [ 'Source+Code+Pro::latin', 'Source+Sans+Pro:400,400italic:latin', 'Merriweather:400,700:latin' ] }
+		};
+		(function() {
+			var wf = document.createElement('script');
+			wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+				'://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+			wf.type = 'text/javascript';
+			wf.async = 'true';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(wf, s);
+		})();
+	</script>
+	<title>Articles | Tri Nguyen</title>
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+	<div class="main-header">
+		<nav class="main-nav" role="navigation">
+			<ul class="main-menu">
+				<li><a href="https://tridnguyen.com"><i class="fa fa-home"></i>Home</a></li>
+			</ul><!-- .main-menu -->
+		</nav><!-- .main-nav -->
+		<div class="about">
+			<img class="personal" alt="Tri wearing headphones focusing on work" title="Tri Nguyen" src="/images/at_upstatement.jpg"/>
+			<h1 class="site-title">Tri Nguyen</h1>
+			<h2 class="site-tagline">Strongly opinionated, but what do I know?</h2>
+		</div><!-- .about -->
+	</div><!-- .main-header -->
+	<section class="main-content">
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/adding-responsive-lightbox-to-wordpress">Adding Responsive Lightbox to WordPress</a></h2>
+					<div class="article-date">12-01-2012</div>
+			<p>I have finally got around to update all the images on this blog to make use of Lightbox. Woohoo!</p>
+			<p>Lightbox has been around for a while, and there are many WordPress plugins that allow you to automatically update your blog with it.</p>
+			<p>However, I have found them to not be very satisfactory for a few reasons. None of them take advantage of the latest version of lightbox plugins. My personal favorite is <a href="http://fancyapps.com/fancybox/">fancyBox</a>, which is responsive as well. Most of them are not responsive, and none of them allows you to group all the images within a post to be in one gallery, which I think is really important.</p>
+			<p><span class="more"></span></p>
+			<p>Following Bryce Adam&#x2019;s incredibly helpful WPTuts tutorial on <a href="http://wp.tutsplus.com/tutorials/theme-development/add-a-responsive-lightbox-to-your-wordpress-theme/">Add a Responsive Lightbox to your WordPress Theme</a>, I have been able to implement Lightbox on my blog using the latest version of fancyBox. As a front-end developer, this is just a much more intuitive approach for me, rather than using a plugin without knowing what it does.</p>
+			<p>I followed step 1 and 2 but implemented step 3 a little differently to allow my version to automatically add all images within a post to the same gallery. I know that WordPress has a built-in gallery function, but I don&#x2019;t use it that often and much prefer adding single image as I need to.</p>
+			<p>Here&#x2019;s my version of the Javacript file:</p>
+			<pre><code class="js">// Initialize the Lightbox for any links with the &apos;fancybox&apos; class
+						$(&quot;.fancybox&quot;).fancybox();
+						$(&apos;article&apos;).each(function() {
+						    var id = $(this).attr(&apos;id&apos;);
+						    // add fancybox class to any .jpg, .png, .jpeg and .gif file, as well as a rel attribute to denote that it belongs to a certain post
+						    $(&quot;a[href$=&apos;.jpg&apos;], a[href$=&apos;.png&apos;], a[href$=&apos;.jpeg&apos;], a[href$=&apos;.gif&apos;]&quot;, this).attr(&apos;rel&apos;, id).addClass(&quot;fancybox&quot;);
+						});
+						</code></pre>
+			<p>If you are not sure of the unusual jQuery selector, it means <a href="http://stackoverflow.com/questions/303956/jquery-select-a-which-href-contains-some-string">selecting an anchor tag <code>a</code> element with <code>href</code> attribute that ends with <code>.png</code></a> etc.</p>
+			<p>As an example, here are some pictures I&#x2019;ve taken from my recent trip to Chicago that I would like to share. All I did is using the regular WordPress media uploader to import the pictures, without any Gallery configuration.</p>
+			<p><img decoding="async" src="http://i1.wp.com/wp.tridnguyen.com/wp-content/uploads/2014/11/chicago-river.jpg?w=840" alt="A walk along the Chicago River" title="A walk along the Chicago River"></p>
+			<p><img decoding="async" src="http://i2.wp.com/wp.tridnguyen.com/wp-content/uploads/2014/11/chicago-waterfront.jpg?w=840" alt="A view of Chicago and its waterfront from the 54th floor" title="A view of Chicago and its waterfront from the 54th floor"></p>
+			<p><img decoding="async" src="http://i2.wp.com/wp.tridnguyen.com/wp-content/uploads/2014/11/loyola-archway.jpg?w=840" alt="Archway at Loyola University" title="Archway at Loyola University"></p>
+			<p><img decoding="async" src="http://i0.wp.com/wp.tridnguyen.com/wp-content/uploads/2014/11/thanksgiving-dinner-2012.jpg?w=840" alt="Thanksgiving Dinner Vietnamese style" title="Thanksgiving Dinner Vietnamese style"></p>
+			<p><img decoding="async" src="http://i1.wp.com/wp.tridnguyen.com/wp-content/uploads/2014/11/chicago-panorama.jpg?w=840" alt="Panoramic view of Chicago" title="Panoramic view of Chicago"></p>
+			<p>P/S: Writing this post has finally made me sit down and implemented <a href="http://prismjs.com">prism.js</a> for this website too! It is actually quite easy to do. DOUBLE WIN!</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/using-em-and-rem">Using Em and Rem</a></h2>
+					<div class="article-date">11-21-2012</div>
+			<p><code>em</code> and <code>rem</code> have slowly become the new standard for sizing font sizes on webpages and even for things like <code>margin</code> and <code>padding</code>.</p>
+			<p>As an avid listener of the <a href="http://shoptalkshow.com/">Shop Talk Show</a>, I&#x2019;ve been itching to start using em&#x2019;s and rem&#x2019;s in my work to see how cool these are (Chris Coyier described this as &#x201C;<a href="http://shoptalkshow.com/episodes/043-with-gene-crawford-and-carl-smith/">spine tinkly hot</a>&#x201C;). But I was never certain of the right way to use either of them. The biggest mental block for me was distinguishing between using em and just regular percentage (%).</p>
+			<p>I&#x2019;ve finally found a great article that clearly explain <a href="http://snook.ca/archives/html_and_css/font-size-with-rem">the pros and cons of using em&#x2019;s and rem&#x2019;s</a>, and how to use them correctly in your code. In fact, I got so excited by this &#x201C;Aha!&#x201D; moment that I decided to write this blog post to commemorate this article and use it as a resource for me to refer back to in the future.</p>
+			<p>So if you&#x2019;re just like me, sitting on the fence about moving to Ems and Rems from good ole px, reading this article might help give you that final nudge to explore it yourself.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/responsive-design-vs-separate-site">Responsive design vs. Separate site: Google Chrome Sync Tabs</a></h2>
+					<div class="article-date">11-18-2012</div>
+			<p>The debate between which strategy to approach for a responsive site is alive and well. The growing support for <a href="http://bradfrost.github.com/this-is-responsive/">Responsive Web Design</a> strongly indicates that many designers and developers truly think that designing for all viewport sizes at the same time, while a very challenging task, is the way to go (the view that I share).</p>
+			<p>This debate is all the more relevant with the <a href="http://mobile.smashingmagazine.com/2012/08/22/separate-mobile-responsive-website-presidential-smackdown/">two very well-run US presidential campaign adopting these very different strategies</a>.</p>
+			<p>I just found another benefit of responsive design &#x2013; it works much better with Google Chrome&#x2019;s <a href="http://support.google.com/chrome/bin/answer.py?hl=en-GB&amp;answer=2591582">synced tabs across devices</a>.</p>
+			<p>If you&#x2019;re like me, you will browse your Twitter feed on the go and click on interesting articles to read on your phone. If an article is too long or is something you&#x2019;d like to read later, you will just leave that tab open. Once back on desktop, you would fire up Chrome and go to &#x201C;Other Devices&#x201D; to bring up the article on the larger screen.</p>
+			<p><img decoding="async" src="http://i2.wp.com/wp.tridnguyen.com/wp-content/uploads/2014/11/chrome-other-devices.png?w=840" alt="Browse open tabs on other devices with Chrome"></p>
+			<p>This is an amazing way to save time as I no longer have to email myself the article or even use <a href="http://getpocket.com">Pocket</a>.</p>
+			<p>This is where responsive design really trumps mobile site. I&#x2019;ll use The Atlantic as the example here. As I initially opened an article on my phone, I am redirected to its mobile site, <a href="http://m.theatlantic.com">http://m.theatlantic.com</a>. As a user, I&#x2019;m happy as the content are laid out beautifully and neatly. This is all fine and good until I open the site up with Chrome on my desktop. Chrome simply grabs the URL from its mobile cousin browser and display that. As a result, the mobile version is displayed on my 23&#x2033; screen in all its glory (or lack thereof). I am less happy now because I feel that my experience has been reduced because I don&#x2019;t have the beautiful typeface or layout that is designed for a larger viewport.</p>
+			<p>If The Atlantic had used the responsive design strategy however, it will be the same URL on any device and my browser will just magically know which layout it needs to adapt to for the most optimized reading experience that had been intended by the designers.</p>
+			<p>I am still surprised at how many big news websites that still do not have responsive design. While it is true that a separate mobile site approach has its merits, I think that it is an approach that was based on the past when responsive design was not a thing. To <a href="http://5by5.tv/webahead">stay ahead with the web</a> though, we need to made some real efforts to make our content responsive. I am sure the people at the NYTimes or The Atlantic already know this and probably are spending a lot of money trying to concert their content to be responsive. Meanwhile, we now have another argument to make for responsive design.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/the-perks-of-being-on-this-side-of-the-pacific-ocean">The perks of being on this side of the Pacific Ocean</a></h2>
+					<div class="article-date">11-06-2012</div>
+			<p><a href="https://twitter.com/crushgear">Steph Yiu</a> wrote a fantastic blog post about what she considers <a href="http://www.hoppycow.com/post/35126924731/the-little-privileges-you-get-by-living-in-the-usa">The Little Privileges You Get By Living In The USA</a>, some of which I whole-heartedly agree with. These are the thoughts that go in my mind daily and I&#x2019;m happy someone has so well articulated and published it on the web.</p>
+			<p><span class="more"></span></p>
+			<p>Here&#x2019;s Steph&#x2019;s list of 10 perks, check out the post for her full description of each perk, which I thought were light-hearted, honest and insightful observations.</p>
+			<blockquote>
+			<ol>
+			<li>You can Amazon Prime stuff</li>
+			<li>You can watch TV on Hulu, and movies on Netflix</li>
+			<li>You can use the iTunes store</li>
+			<li>You don&#x2019;t need to worry about spoilers</li>
+			<li>Brands in magazines? They&#x2019;re real.</li>
+			<li>You can buy Reese&#x2019;s Pieces</li>
+			<li>Have stuff to do over the holidays</li>
+			<li>Britney Spears concerts</li>
+			<li>The best media the world has to offer.</li>
+			<li>Vote in the biggest election on the planet.</li>
+			</ol>
+			</blockquote>
+			<p>To this list, I would only add <strong>Listening to Spotify and Pandora</strong>, which have become my staples for music for quite a while now, and <strong>Getting first dibs at product releases</strong> (think Apple and Android phones, Amazon Kindles etc.), though the latter has been improved with every release cycle.</p>
+			<p>I don&#x2019;t really get the Birtney Spear concerts, but I do think that there are just a whole lot more concerts here in general, not just big name ones, but even small little ones around the community neighborhoods. And unfortunately I can&#x2019;t share Steph&#x2019;s joy in being a part of the election, but I share the sentiment nonetheless.</p>
+			
+				</article><!-- .post-single -->
+			
+			<div class="nav-link">
+					<a class="prev" href="/articles/12"><i class="fa fa-arrow-left"></i> Previous</a>
+					<a class="next" href="/articles/10">Next <i class="fa fa-arrow-right"></i></a>
+			</div>
+			
+			
+	</section><!-- .main-content -->
+		<footer class="main-footer">
+			<div class="social-networks">
+				<div class="twitter link">
+					<a href="https://twitter.com/tridnguyen" rel="me"><i class="fa fa-twitter"></i></a>
+				</div>
+				<div class="github link">
+					<a href="https://github.com/tnguyen14" rel="me"><i class="fa fa-github"></i></a>
+				</div>
+				<div class="linkedin link">
+					<a href="https://linkedin.com/in/triduynguyen" rel="me"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+			Built by Tri Nguyen using <a href="https://github.com/tnguyen14/tobiko">tobiko</a>. Copyrights ® 2025.
+		</footer>
+		<script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="/lib/bxslider/jquery.bxSlider.min.js"></script>
+		<script type="text/javascript" src="/lib/prism/prism.js"></script>
+		<script type="text/javascript">
+			var page = {
+				env: ""
+			};
+		</script>
+		<script type="text/javascript" src="/js/app.js"></script>
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			
+			  ga('create', 'UA-26482928-1', 'tridnguyen.com');
+			  ga('send', 'pageview');
+			
+			</script>	</body>
+</html>

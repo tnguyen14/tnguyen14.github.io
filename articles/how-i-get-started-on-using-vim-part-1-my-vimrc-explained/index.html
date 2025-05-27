@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript">
+		WebFontConfig = {
+			google: { families: [ 'Source+Code+Pro::latin', 'Source+Sans+Pro:400,400italic:latin', 'Merriweather:400,700:latin' ] }
+		};
+		(function() {
+			var wf = document.createElement('script');
+			wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+				'://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+			wf.type = 'text/javascript';
+			wf.async = 'true';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(wf, s);
+		})();
+	</script>
+	<title>How I get started on using Vim, part 1 – my .vimrc explained | Tri Nguyen</title>
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+	<div class="main-header">
+		<nav class="main-nav" role="navigation">
+			<ul class="main-menu">
+				<li><a href="https://tridnguyen.com"><i class="fa fa-home"></i>Home</a></li>
+			</ul><!-- .main-menu -->
+		</nav><!-- .main-nav -->
+		<div class="about">
+			<img class="personal" alt="Tri wearing headphones focusing on work" title="Tri Nguyen" src="/images/at_upstatement.jpg"/>
+			<h1 class="site-title">Tri Nguyen</h1>
+			<h2 class="site-tagline">Strongly opinionated, but what do I know?</h2>
+		</div><!-- .about -->
+	</div><!-- .main-header -->
+	<section class="main-content">
+		<div class="post-single">
+			<h1>How I get started on using Vim, part 1 – my .vimrc explained</h1>
+			<div class="article-date">10-12-2015</div>
+<p>For some reason, I’ve had it in my head that as a programmer, I should learn how to use a command-line-based text editor like Vim. It is more universal across devices, so knowing it would at least give me an option to navigate around computers other than my own, is an advice I often hear. It would be more applicable if I were an ops person, but on the infrequent (though increasingly less so) occasions that I have to remotely log in into a server box, I do find that to be true. Furthermore, since for most codebases I deal with, I already have a terminal window open for git and build tools, I figure keeping text editing in the same context will be beneficial.</p>
+<p>I tend to agree with <a href="http://yehudakatz.com/2010/07/29/everyone-who-tried-to-convince-me-to-use-vim-was-wrong/">Yehuda Katz’s experience learning Vim</a>, that it is something one should learn incrementally. I started down this path almost two years ago, only to decide on several occasions that it wasn’t the right tool for me. It is not until very recently that I feel comfortable enough to use it as my primary text editor. Even then, there are times when I find myself opening up Sublime Text or Atom because they’re more appropriate for what I need to do.</p>
+<p>What allowed me to be more comfortable in Vim is less about learning the shortcuts and muscle memory, but more the heavy customization that I have put on top of Vim to give it the convenience editors like Sublime have out of the box, and also the deeper insight into how Vim actually works.</p>
+<p>I have been thinking about writing this blog post for a while, but never felt like I was ready to have an “authority” on this topic. But I decided today that it’s time I break down and explain my Vim setup (through the <code>.vimrc</code> file) before it gets too complicated.</p>
+<p>To me, the most fundamental difference between Vim and a GUI editor like Sublime is that <strong>Vim is a modal editor</strong>. That means Vim has different “modes” that a user could be in at any given time. In Sublime, you’re always in edit mode. Anything you type on the keyboard is recorded in the text buffer. Other actions, such as saving, linting or navigating, are done through special key combinations, such as <code></code> key on Windows or <code>Cmd</code> key on OS X. In Vim, the default mode is <code>NORMAL</code>, which is where you can do most of these “meta” actions on the document, without modifying the text itself. You need to explicitly enter the <code>INSERT</code> mode to edit something, and escape out of it to perform those actions. Being aware of the current active mode is important, and will help beginners feel less confused and lost. You can make vim show the mode with the command <code>:set showmode</code> while in <code>NORMAL</code> mode, or see the <code>.vimrc</code> breakdown to see how to set that permanently.</p>
+<p>The second most powerful difference in Vim as compared to a GUI editor is the concept of <strong>motions</strong>, or <strong>text objects</strong>. There are a lot of great tutorials and resources out there explaining this. I find <a href="http://blog.carbonfive.com/2011/10/17/vim-text-objects-the-definitive-guide/">Vim Text Objects: The Definitive Guide</a> to be a really great place to start, as it was the “ah ha!” moment for me. This way of moving around a document is probably what makes Vim much more appealing and efficient for me.</p>
+<p>As I walk through my <code>.vimrc</code> setup, I will denote the ones that I think are basic developer use as <code>[basic]</code>, so search for those if you just want a quick way to get started with Vim. My <code>.vimrc</code> file actually changes quite often as I refine the setup, so take a look at the <a href="https://github.com/tnguyen14/dotfiles/blob/master/home/.vimrc">source code</a> to see the latest version. Here goes:</p>
+<ul>
+<li>An explanation of <a href="http://stackoverflow.com/questions/5845557/in-a-vimrc-is-set-nocompatible-completely-useless">what this actually does/ why it’s necessary</a>
+<pre><code>set nocompatible</code></pre>
+</li>
+<li>This whole big chunk is about <a href="https://github.com/VundleVim/Vundle.vim">Vundle</a>, one of the most popular Vim plugin managers out there. There are a few, but I find Vundle to be the most consistent across all plugins I come across, and it has worked really well for me.
+<pre><code class="language-vim">" Vundle
+filetype off
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" Let Vundle manage Vundle
+Plugin 'gmarik/Vundle.vim'
+Plugin 'chriskempson/base16-vim'
+Plugin 'tpope/vim-fugitive'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'tpope/vim-commentary'
+Plugin 'wincent/command-t'
+Plugin 'editorconfig/editorconfig-vim'
+Plugin 'scrooloose/nerdtree'
+Plugin 'Xuyuanp/nerdtree-git-plugin'
+Plugin 'pangloss/vim-javascript'
+Plugin 'bling/vim-airline'
+Plugin 'kien/ctrlp.vim'
+Plugin 'mustache/vim-mustache-handlebars'
+Plugin 'Raimondi/delimitMate'
+Plugin 'Yggdroot/indentLine'
+Plugin 'othree/html5.vim'
+Plugin 'wincent/terminus'
+Plugin 'scrooloose/syntastic'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'rking/ag.vim'
+Plugin 'cakebaker/scss-syntax.vim'
+Plugin 'hail2u/vim-css3-syntax'
+Plugin 'ap/vim-css-color'
+Plugin 'ryanoasis/vim-devicons'
+Plugin 'elzr/vim-json'
+Plugin 'tmux-plugins/vim-tmux-focus-events'
+Plugin 'tmux-plugins/vim-tmux'
+Plugin 'tpope/vim-surround'
+Plugin 'moll/vim-bbye'
+call vundle#end()
+</code></pre>
+<p>In order to install a new plugin, I just append it to the end of this list, then run 2 commands (in Normal mode): <code>:source ~/.vimrc</code> and <code>:PluginInstall</code>. Removing one is just the opposite, and <code>PluginClean</code> instead of install.</li>
+<li>I like the dark <a href="https://github.com/chriskempson/base16">Tomorrow Night/ base16</a> syntax theme, so that’s what I set up here. I use the same theme for Sublime, Atom as well as the terminal.
+<pre><code class="language-vim">set background=dark
+let base16colorspace=256  " Access colors present in 256 colorspace"
+colorscheme base16-tomorrow</code></pre>
+<p>Here’s a screenshot of what my Vim setup looks like visually:<br />
+<a href="http://i2.wp.com/wp.tridnguyen.com/wp-content/uploads/2015/10/Screen-Shot-2015-10-12-at-12.44.22-AM.png"><img decoding="async" class="alignnone size-medium wp-image-138" src="http://i2.wp.com/wp.tridnguyen.com/wp-content/uploads/2015/10/Screen-Shot-2015-10-12-at-12.44.22-AM.png?resize=600%2C328" alt="vim-screenshot" /></a></li>
+<li>[basic] This next chunk includes convenience settings that make working with Vim friendlier, especially to someone who’s more comfortable with a GUI editor like me. I have inline comments to explain what each of the configuration does, including some external links for more thorough explanation.
+<pre><code class="language-vim">" Allow saving of files as sudo when forgot to start vim using sudo
+cmap w!! w !sudo tee &gt; /dev/null %
+" Enable syntax highlighting
+syntax on
+
+" File type based indentation
+filetype plugin indent on
+" Show what mode you're currently in
+set showmode
+" Show what commands you're typing
+set showcmd
+" Allow modelines
+" http://vim.wikia.com/wiki/Modeline_magic
+set modeline
+" Show current line and column position in file
+set ruler
+" Show file title in terminal tab
+set title
+" Show line numbers
+set number
+" Always display the status line
+set laststatus=2
+" Highlight current line
+set cursorline
+" Highlight search results as we type
+set incsearch
+" ignore case when searching...
+set ignorecase
+" ...except if we input a capital letter
+set smartcase
+
+" hides buffer instead of closing them
+" http://usevim.com/2012/10/19/vim101-set-hidden/
+set hidden
+
+" Tab stuff
+set tabstop=4
+set shiftwidth=4
+set autoindent
+</code></pre>
+</li>
+<li>One of the things I like about Sublime Text is its sensible default for whitespace/invisible characters. The setting above tries to imitate some of that to make it feel more familiar.
+<pre><code class="language-vim">
+" Show invisible characters
+set list
+set listchars=tab:→ ,trail:·,eol:˧</code></pre>
+</li>
+<li>[basic] Sublime makes it really easy to split windows and have things side by side. Vim has very good support for that too, but the default shortcut of requiring <code>&lt;C-W&gt;</code>, which means pressing <code>control-w</code> keys before every action, is rather clunky. These mappings making it more fun to navigate around the different panes you have open in Vim.
+<pre><code class="language-vim">" Set split pane direction to be more natural
+set splitbelow
+set splitright
+
+" Buffer navigation
+noremap &lt;Leader&gt;] :bnext&lt;CR&gt;
+noremap &lt;Leader&gt;[ :bprev&lt;CR&gt;
+
+" bbye remap to w
+noremap &lt;Leader&gt;w :Bdelete&lt;CR&gt;
+
+" Navigate panes with control
+nnoremap &lt;C-H&gt; &lt;C-W&gt;&lt;C-H&gt;
+nnoremap &lt;C-J&gt; &lt;C-W&gt;&lt;C-J&gt;
+nnoremap &lt;C-K&gt; &lt;C-W&gt;&lt;C-K&gt;
+nnoremap &lt;C-L&gt; &lt;C-W&gt;&lt;C-L&gt;
+</code></pre>
+<p>If you’re lost of the difference between panes/ windows/ buffers, you’re not alone. I’m still confused as hell about them. Throw tabs in the mix and it gets complicated real quick. I find this explanation on <a href="https://joshldavis.com/2014/04/05/vim-tab-madness-buffers-vs-tabs/">buffers vs. tabs</a> to be quite informative. I’m convinced for now to just stick with buffers with the help of <a href="https://github.com/bling/vim-airline#smarter-tab-line">airline plugin’s tabline feature</a>, which keeps things simpler and more aligned with Sublime’s way of handling things.</li>
+<li>[basic] This is perhaps the most important key mapping in the entire .vimrc file 😉.
+<pre><code class="language-vim">
+" remap : to ; to avoid pressing Shift
+nnoremap ; :
+vnoremap ; :
+</code></pre>
+<p>Since many Vim commands in Normal mode start with <code>:</code>, my right pinky gets quite a bit of stretching. If I don’t let go of the Shift key in time, I accidentally uppercase the command a lot, which gets annoying. Mapping <code>;</code> to <code>:</code> eliminates the need to press Shift. However, it does take a bit of practice to get used to this, if you’re already used to typing the colon.</li>
+<li>Another mapping to save the pinky 🙌.
+<pre><code class="language-vim">
+" remap  key
+let mapleader = '\&lgt;Space&gt;'
+</code></pre>
+<p>The &lt;Leader&gt; key is now the space bar, instead of the default <code></code> key, which is just way out there.. The spacebar is also convenient for both thumbs to press.</li>
+<li>These are plugin-specific settings that make these powerful plugins behave more intuitively.
+<pre><code class="language-vim">
+" airline
+let g:airline#extensions#tabline#enabled = 1
+" Show just the filename
+let g:airline#extensions#tabline#fnamemod = ':t'
+
+" NERDTree
+let NERDTreeShowHidden = 1
+let NERDTreeMapOpenSplit = '&lt;C-x&gt;'
+let NERDTreeMapOpenVSplit = '&lt;C-v&gt;'
+let NERDTreeMapOpenInTab = '&lt;C-t&gt;'
+" open NERDTree automatically on vim start, even if no file is specified
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 &amp;&amp; !exists("s:std_in") | NERDTree | endif
+" open NERDTree with `Ctrl-n`
+map &lt;C-n&gt; :NERDTreeToggle&lt;CR&gt;
+
+" Syntastic recommended settings
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+let g:syntastic_html_tidy_ignore_errors=[" proprietary attribute " ,"trimming empty &lt;", "unescaped &amp;" , "lacks "action", "is not recognized!", "discarding unexpected"]
+
+" make ESC key work for command-t
+if &amp;term =~ "xterm" || &amp;term =~ "screen"
+    let g:CommandTCancelMap = ['&lt;ESC&gt;', '&lt;C-c&gt;']
+endif
+
+" Disable JSON quote concealing
+let g:vim_json_syntax_conceal = 0
+
+" ctrlp
+" show hidden files
+let g:ctrlp_show_hidden = 1
+
+" ycm
+" &lt;Enter&gt; key completion
+let g:ycm_key_list_select_completion = ['&lt;TAB&gt;', '&lt;Down&gt;', '&lt;Enter&gt;']
+</code></pre>
+</li>
+</ul>
+<p>While plugins and basic setup establish a friendlier stage for a beginner to Vim to start exploring around, one of the most frustrating things when trying Vim out is not knowing how to do basic developer tasks in Vim. In addition to the “[basic]” setup I have outlined here, I will document more of what those tasks are, such as find/replace, copy/paste, indentation etc. in the second part of this series.</p>
+
+					<div id="disqus_thread"></div>
+					<script type="text/javascript">
+						/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+						var disqus_shortname = 'tridnguyen'; // required: replace example with your forum shortname
+				
+						/* * * DON'T EDIT BELOW THIS LINE * * */
+						(function() {
+							var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+							dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+							(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+						})();
+					</script>
+					<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+					<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+		</div>
+	</section><!-- .main-content -->
+		<footer class="main-footer">
+			<div class="social-networks">
+				<div class="twitter link">
+					<a href="https://twitter.com/tridnguyen" rel="me"><i class="fa fa-twitter"></i></a>
+				</div>
+				<div class="github link">
+					<a href="https://github.com/tnguyen14" rel="me"><i class="fa fa-github"></i></a>
+				</div>
+				<div class="linkedin link">
+					<a href="https://linkedin.com/in/triduynguyen" rel="me"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+			Built by Tri Nguyen using <a href="https://github.com/tnguyen14/tobiko">tobiko</a>. Copyrights ® 2025.
+		</footer>
+		<script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="/lib/bxslider/jquery.bxSlider.min.js"></script>
+		<script type="text/javascript" src="/lib/prism/prism.js"></script>
+		<script type="text/javascript">
+			var page = {
+				env: ""
+			};
+		</script>
+		<script type="text/javascript" src="/js/app.js"></script>
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			
+			  ga('create', 'UA-26482928-1', 'tridnguyen.com');
+			  ga('send', 'pageview');
+			
+			</script>	</body>
+</html>

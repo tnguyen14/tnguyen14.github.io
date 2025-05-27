@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript">
+		WebFontConfig = {
+			google: { families: [ 'Source+Code+Pro::latin', 'Source+Sans+Pro:400,400italic:latin', 'Merriweather:400,700:latin' ] }
+		};
+		(function() {
+			var wf = document.createElement('script');
+			wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+				'://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+			wf.type = 'text/javascript';
+			wf.async = 'true';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(wf, s);
+		})();
+	</script>
+	<title>Articles | Tri Nguyen</title>
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+	<div class="main-header">
+		<nav class="main-nav" role="navigation">
+			<ul class="main-menu">
+				<li><a href="https://tridnguyen.com"><i class="fa fa-home"></i>Home</a></li>
+			</ul><!-- .main-menu -->
+		</nav><!-- .main-nav -->
+		<div class="about">
+			<img class="personal" alt="Tri wearing headphones focusing on work" title="Tri Nguyen" src="/images/at_upstatement.jpg"/>
+			<h1 class="site-title">Tri Nguyen</h1>
+			<h2 class="site-tagline">Strongly opinionated, but what do I know?</h2>
+		</div><!-- .about -->
+	</div><!-- .main-header -->
+	<section class="main-content">
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/handlebars-templates-with-backbone-grunt-and-requirejs">Handlebars templates with Backbone, grunt.js and RequireJS</a></h2>
+					<div class="article-date">03-31-2014</div>
+			<p>Integrating Handlebars templates in modern web development workflow has been crucial in helping me organize my code neatly and maintain sanity. I want to achieve a few things:</p>
+			<ul>
+			<li>avoid the <code>&lt;script&gt;</code> tags to take advantage of syntax highlighting,</li>
+			<li>break large templates into smaller files that can be managed and reused (componentized),</li>
+			<li>automatically compiles and ready for use, and</li>
+			<li>namespaced with file names as template names.</li>
+			</ul>
+			<p>In a current Backbone.js application at work, which is set up with <a href="gruntjs.com">grunt</a> and <a href="requirejs.org">RequireJS</a> (you can find a similar set up with the default <a href="https://github.com/yeoman/generator-backbone/">yeoman backbone generator</a>), I have found the following set up to meet most of these goals.</p>
+			<p>I can use the templates with RequireJS in the views like so:</p>
+			<pre><code class="language-javascript">// viewOne.js
+						
+						// I use commonjs syntax with require
+						// http://requirejs.org/docs/whyamd.html#sugar
+						var Templates = require(&apos;templates&apos;);
+						var viewTemplate = Templates.viewOne;
+						var html = viewTemplate({data: &apos;test&apos;});
+						</code></pre>
+			<p>The template directories look something like this</p>
+			<pre><code class="language-bash">app/templates/
+						&#x251C;&#x2500;&#x2500; viewOne.hbs
+						&#x251C;&#x2500;&#x2500; viewTwo.hbs
+						&#x251C;&#x2500;&#x2500; viewThree.hbs
+						&#x251C;&#x2500;&#x2500; ...
+						&#x2514;&#x2500;&#x2500; viewTwentyThree.hbs
+						
+						0 directories, 23 files
+						</code></pre>
+			<p>I use <a href="https://github.com/gruntjs/grunt-contrib-handlebars"><code>grunt-contrib-handlebars</code></a> to compile the templates. Here&#x2019;s the Gruntfile.js config for local development:</p>
+			<pre><code class="language-javascript">handlebars: {
+						    compile: {
+						        options: {
+						            amd: true,
+						            namespace: &apos;Templates&apos;,
+						            partialsUseNamespace: true,
+						            processName: function(filePath) {
+						                var file = filePath.replace(/.*/(w+).hbs/, &apos;$1&apos;);
+						                return file;
+						            }
+						        },
+						        files:{
+						            &apos;.tmp/scripts/templates.js&apos;: [&apos;&lt;%= yeoman.app %&gt;/templates/*.hbs&apos;]
+						        }
+						    }
+						}
+						</code></pre>
+			<p>The above code does a few things. More detailed explanation of what each <code>options</code> does can be found on the plugin github page.</p>
+			<ul>
+			<li>The <code>processName</code> function takes the files and use their name as the template name.</li>
+			<li>With <code>partialsUseNamespace</code> turned on, you can use partials both within your template as <code>&gt; partial</code> or through the global <code>Templates</code> object.</li>
+			</ul>
+			<p>In the build step for deployment, instead of just outputing the compiled templates into the <code>.tmp</code> folder, RequireJS can put Templates in the optimized javascript with the following Grunt task config (note the <code>paths</code> option):</p>
+			<pre><code class="language-javascript">requirejs: {
+						    dist: {
+						        options: {
+						            baseUrl: &apos;&lt;%= yeoman.app %&gt;/scripts&apos;,
+						            optimize: &apos;none&apos;,
+						            paths: {
+						                &apos;templates&apos;: &apos;../../.tmp/scripts/templates&apos;
+						            }
+						        }
+						    }
+						}
+						</code></pre>
+			<p>This simple set up has allowed me to rapidly develop a complex apps by breaking down complex templates into small reusuable components and use them liberally anywhere with RequireJS, yet keep the built JavaScript minimal and compressed. I hope it will be useful for others who might be looking for a similar solution. If you find this useful or would like to suggest an improvement, please leave a comment.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/cbtallccom-redesign-launched">cbtallc.com redesign launched!</a></h2>
+					<div class="article-date">03-18-2014</div>
+			<p>I started working with Jim and CBTA LLC. on their website since 2010. In fact, it was the first ever WordPress site I built, marking the beginning of my web development career. It was the good old days of buying a standard theme (for $40 or so if I remember correctly) and then customizing it through ONE single custom stylesheet, inline styles and inline scripts. With all of that, I was able to create a homepage with carousel and a Google calendar page for appointment scheduling (see the screenshots attached). I was pretty proud of myself for this.</p>
+			<p><img decoding="async" src="http://i1.wp.com/wp.tridnguyen.com/wp-content/uploads/2014/11/old_cbta.png?w=840" alt="Old Site Homepage"></p>
+			<p><img decoding="async" src="http://i0.wp.com/wp.tridnguyen.com/wp-content/uploads/2014/11/old_cbta2.png?w=840" alt="Old Site Appointment Page"></p>
+			<p>Fast forward 3 years, the old way of using a paid theme of using inline styles and scripts became unsustainable as the practice&#x2019;s needs expanded. And while I have learned and grown so much more as a WordPress developer, having built many custom themes and functionalities, I felt that WordPress was an overkill for a site like cbtallc.com. The concept of a server-side architecture with database queries became clunky for a site that requires so many custom pages and functionalities yet few content iterations. I was responsible for updating few content changes, yet unable to implement new cool features. This is when I decided that a static-site generator would suit the needs of this page better.</p>
+			<p>Having just released <a href="https://github.com/tnguyen14/tobiko">tobiko</a> and used it on this personal blog, I decided to use it to power cbtallc.com version 2 as well. Thus began a very exciting process for me of stripping a rather standard business-y site originally into a more modern and minimal looking site, preserving the original functionalities yet making it more open to new features. I wanted to reduce the number of pages a user has to click through to consume the information that matters to them. All of this while keeping the site as clutter-free as possible, keeping in mind the potential audience the site would attract. Last but not least, while the amount of mobile and tablet usage was low, I believe it was because the old site could not be as mobile-friendly as it should be. So the new site was developed with responsive design baked in from the start.</p>
+			<p><img decoding="async" src="http://i1.wp.com/wp.tridnguyen.com/wp-content/uploads/2014/11/new_cbta.png?w=840" alt="New Site Homepage"></p>
+			<p><img decoding="async" src="http://i0.wp.com/wp.tridnguyen.com/wp-content/uploads/2014/11/new_cbta2.png?w=840" alt="New Site Appointment Page"></p>
+			<p>Having said all that, I am not a designer by training, so I&#x2019;m sure there are probably more design violations committed in the new site than legally allowed. But I think I am more okay with that, because the whole static-site architecture that tobiko provides allows the developer me to iterate quicker and make more frequent small improvements over time. This is actually what I am happiest about the new site &#x2013; the new build process that is baked into it. I won&#x2019;t go into depth on the benefits of <a href="https://github.com/tnguyen14/tobiko">tobiko</a> here, and there are plenty, but that&#x2019;s for another post.</p>
+			<p>The practice&#x2019;s appointment schedule system is improved with newer tools, including fullcalendar and Twitter Bootstrap modal. A user can now select an appointment request right from the calendar without typing in the date and time repeatedly as before. The new site also exposes information about therapists at the practice and treatments offered in a way that requires less friction from the users (fewer clicking and page refreshes), which hopefully will amount to a smoother overall experience. So there are also clear UX and content wins with the redesign as well, in addition to the behind-the-scene stuff.</p>
+			<p>There are certainly many areas the site can be better, including a cleaner, friendlier calendar display and deeper content engagement with the audience through blog posts (which is thankfully built in to tobiko). These challenges and improvements will definitely be worked on as I embrace a more agile approach in developing the site. As for these past couple weeks since the soft launch, I am pretty happy that a website that started it all for me gets a facelift and hopefully serves its users better. Check it out at http://www.cbtallc.com.</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/meteor-and-bower">Meteor and Bower</a></h2>
+					<div class="article-date">12-10-2013</div>
+			<p>I have been using <a href="http://meteor.com">Meteor.js</a> for one of my projects in the past few months. After working with WordPress and the LAMP stack for a while, I quite welcome the new and refreshing environment Meteor has to offer.</p>
+			<p>When I first started with Meteor, the one thing I sorely missed from building other web apps was the ability to use <a href="http://bower.io"><code>bower</code></a> to manage front-end dependencies. I have come to rely on <code>bower</code> to get me the latest copies of libraries and put them in a consistent place. Meteor, however, has its own way of managing packages and isn&#x2019;t fully compatible with <code>bower</code> right off the bat.</p>
+			<p>After some digging around on StackOverflow and jumping on the IRC channel, I figured that there was no perfect way to integrate this. So I decided to create a little hack to make bower works with Meteor. The package that sparked my desire to make this work was <code>bootstrap</code>. I posted <a href="http://stackoverflow.com/questions/18110976/use-twitter-bootstrap-3-rc1-with-meteor/18112473#18112473">an earlier version of this post</a> on StackOverflow.</p>
+			<h3>Where to put <code>bower_components</code>?</h3>
+			<p>This was the first question I had to answer. Since Meteor automatically packages any <code>.css</code> and <code>.js</code> files in the <code>client</code> folder and serves them, <code>client</code> is not a good idea to put these dependencies, as they most likely have a bloated number of files you don&#x2019;t actually need.</p>
+			<p>I found <code>public</code> to be a good place to keep these files, since &#x201C;Meteor server will serve any files under the <code>public</code> directory&#x201D;.</p>
+			<pre><code class="json">{
+						  &quot;directory&quot;: &quot;public/bower_components&quot;
+						}
+						</code></pre>
+			<h3>How to use these assets?</h3>
+			<p>Any static files (<code>.css</code>, <code>.jpg</code>, <code>.png</code>, <code>.svg</code> and so on) can be sourced like this:</p>
+			<pre><code class="html">&lt;link rel=&quot;stylesheet&quot; href=&quot;bower_components/bootstrap/dist/css/bootstrap.min.css&quot;/&gt;
+						</code></pre>
+			<p><code>less</code> files can also be included in your authored <code>less</code> code as well:</p>
+			<pre><code class="less">@import &quot;public/bower_components/bootstrap/less/bootstrap.less&quot;;
+						</code></pre>
+			<p>Notice the path above include the <code>public</code> folder.</p>
+			<h4>Explicitly declare files to be included on the client</h4>
+			<p>While the above method for static files works fine locally and on sites deployed to meteor.com, it fails when the app is deployed to heroku. Furthermore, it would not work for JavaScript files since Meteor templates do not execute any <code>&lt;script&gt;</code> tags in the body the way one would expect.</p>
+			<p>In order to overcome these challenges, I use a small hack.</p>
+			<ul>
+			<li>Create a package whose job is solely to serve any static files from bower components.</li>
+			</ul>
+			<pre><code class="sh"> &#x276F; tree packages
+						packages
+						&#x2514;&#x2500;&#x2500; bower-dependencies
+						    &#x2514;&#x2500;&#x2500; package.js
+						</code></pre>
+			<ul>
+			<li>In <code>package.js</code>, declare any static assets that you&#x2019;d like to use on the client</li>
+			</ul>
+			<pre><code class="js">Package.describe({
+						    summary: &quot;Load bower dependencies.&quot;
+						});
+						
+						Package.on_use(function(api) {
+						    // bootstrap
+						    api.add_files([&apos;../../public/bower_components/bootstrap/dist/js/bootstrap.min.js&apos;], &apos;client&apos;);
+						    api.add_files([
+						        &apos;../../public/bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.eot&apos;,
+						        &apos;../../public/bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.svg&apos;,
+						        &apos;../../public/bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf&apos;,
+						        &apos;../../public/bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.woff&apos;
+						    ], &apos;client&apos;);
+						    // ladda-bootstrap
+						    api.add_files([
+						        &apos;../../public/bower_components/ladda-bootstrap/dist/ladda-themeless.min.css&apos;,
+						        &apos;../../public/bower_components/ladda-bootstrap/dist/spin.min.js&apos;,
+						        &apos;../../public/bower_components/ladda-bootstrap/dist/ladda.min.js&apos;
+						    ], &apos;client&apos;);
+						});
+						</code></pre>
+			<p>This will make the static assets available at the proper URL. For example, to use the glyphicon fonts in this case, the URL would be <code>/bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.eot</code>.</p>
+			<p>This package will also serve any JavaScript and CSS files automatically, as they are gathered and bundled by Meteor before serving.</p>
+			<h3>Install bower dependencies when deployed to Heroku</h3>
+			<p>Since using <code>bower</code> is not a very popular pattern among Meteor developers, bower dependencies are usually left out on deployment because the <code>bower_components</code> folder is usually <code>gitignor</code>-ed and thus not included in the source code.</p>
+			<p>When deploying my app to heroku, I use this <a href="https://github.com/oortcloud/heroku-buildpack-meteorite"><code>heroku-buildpack-meteorite</code></a>. In order to make bower works, I added the following lines of code after packages are installed and before the meteor bundle is built:</p>
+			<pre><code class="sh">echo &quot;Installing bower&quot; | indent
+						run_npm &quot;install bower -g&quot;
+						echo &quot;Bower installed&quot; | indent
+						echo &quot;Installing bower dependencies&quot; | indent
+						HOME=&quot;$BUILD_DIR&quot; bower install |indent
+						</code></pre>
+			<p>This code is submitted as a <a href="https://github.com/oortcloud/heroku-buildpack-meteorite/pull/28/files">pull request</a>, but I also <a href="https://github.com/tnguyen14/heroku-buildpack-meteorite">maintain a fork</a> that has this added support for bower.</p>
+			<h3>Conclusions</h3>
+			<p>I hope my solution will be useful for people who would like to stay with <code>bower</code> for front-end package management in the Meteor world. I am aware that Meteor and Meteorite projects have official support for many important packages, including <code>bootstrap</code> used in this example. However, depending on those packages add a layer of delay into your workflow, as updates will not be as quick as the original. This was true for me back in September when I wanted to use Bootstrap 3 as it was released to the public. Meteor did not have support for it until much later. It is for good reason &#x2013; they want to make sure things are stable and safe before pushing out an update, and probaly want to time it with their release cycle as well. However, as developers, sometimes we get itchy and want to take new things still under development out for an early ride. That is what <code>bower</code> is there for, so why not use it, right?</p>
+			
+				</article><!-- .post-single -->
+				<article class="post-single">
+					<h2 class="article-title"><a href="/articles/a-summer-update">A summer update</a></h2>
+					<div class="article-date">06-13-2013</div>
+			<p>So here are a few updates since my last post:</p>
+			<ul>
+			<li>
+			<p>I have begun working at <a href="http://upstatement.com">Upstatement</a> for the summer as their web developer intern. Things are going really well here so far. Had my first company Tank Day last Friday, where we went to play bowling, arcade and pool for the whole day. Can&#x2019;t complain.</p>
+			</li>
+			<li>
+			<p>This site will soon be moved to a static site generator based on <a href="http://wintersmith.io">wintersmith</a>, a node.js-based framework. Progress on the project can be seen <a href="https://github.com/tnguyen14/wintersmith">on Github</a>. It will probably be hosted with Github Pages. Sad to leave WordPress and WPEngine for now (especially after the new and beautifully designed MP6), but I feel like this new platform is the right move. It fits in well with my developer workflow, including using grunt.js as a build tool, write post in markdown and allows me greater control over theming and styling. The only beef I have about it so far is that it uses Jade as the templating engine. Jade feels weird to me. It&#x2019;d be better if there was a handlebars plugin or sth along that line (mustache or underscore come to mind). Maybe I can research and write a plugin for that one day.</p>
+			</li>
+			<li>
+			<p>I&#x2019;ve been attending many meetups in the area (my favorite thing about living in Boston in the summer). I&#x2019;ve heard many interesting topics being tossed around, including <a href="http://www.meetup.com/Boston-Frontend-Developers/events/118950602/">Data</a> <a href="http://openvisconf.com">Visualization</a>, <a href="http://www.meetup.com/html5boston/events/119440202/">analysis of the different JS frameworks</a> (Angular, Backbone and Ember to name a few), more arguments for <a href="http://www.meetup.com/Boston-MongoDB-User-Group/events/113031362/">using MongoDB</a> and <a href="http://www.meetup.com/Boston-MongoDB-User-Group/events/119162122/">other NoSQL database systems</a>, <a href="http://www.meetup.com/boston-wordpress-meetup/events/112452922/">WordPress goodness</a> and <a href="http://www.meetup.com/Boston-Data-Mining/events/120911302/">big data hacking</a> among others. There&#x2019;s gonna be one on <a href="http://www.meetup.com/javascript-2/events/121041442/">Client Side Data Management</a> tonight, and a half day conference next week on <a href="http://www.northeastern.edu/camd/artdesign/events/swiss-style-reboot/">Information Design and Data Visualization</a>. I am literally in awe at the infinite amount of resources that are available in this city for someone to learn, for FREE, with pizza and occasional beers too.</p>
+			</li>
+			</ul>
+			
+				</article><!-- .post-single -->
+			
+			<div class="nav-link">
+					<a class="prev" href="/articles/9"><i class="fa fa-arrow-left"></i> Previous</a>
+					<a class="next" href="/articles/7">Next <i class="fa fa-arrow-right"></i></a>
+			</div>
+			
+			
+	</section><!-- .main-content -->
+		<footer class="main-footer">
+			<div class="social-networks">
+				<div class="twitter link">
+					<a href="https://twitter.com/tridnguyen" rel="me"><i class="fa fa-twitter"></i></a>
+				</div>
+				<div class="github link">
+					<a href="https://github.com/tnguyen14" rel="me"><i class="fa fa-github"></i></a>
+				</div>
+				<div class="linkedin link">
+					<a href="https://linkedin.com/in/triduynguyen" rel="me"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+			Built by Tri Nguyen using <a href="https://github.com/tnguyen14/tobiko">tobiko</a>. Copyrights ® 2025.
+		</footer>
+		<script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="/lib/bxslider/jquery.bxSlider.min.js"></script>
+		<script type="text/javascript" src="/lib/prism/prism.js"></script>
+		<script type="text/javascript">
+			var page = {
+				env: ""
+			};
+		</script>
+		<script type="text/javascript" src="/js/app.js"></script>
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			
+			  ga('create', 'UA-26482928-1', 'tridnguyen.com');
+			  ga('send', 'pageview');
+			
+			</script>	</body>
+</html>

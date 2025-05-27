@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript">
+		WebFontConfig = {
+			google: { families: [ 'Source+Code+Pro::latin', 'Source+Sans+Pro:400,400italic:latin', 'Merriweather:400,700:latin' ] }
+		};
+		(function() {
+			var wf = document.createElement('script');
+			wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+				'://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+			wf.type = 'text/javascript';
+			wf.async = 'true';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(wf, s);
+		})();
+	</script>
+	<title>Git and GitHub: checked! | Tri Nguyen</title>
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+	<div class="main-header">
+		<nav class="main-nav" role="navigation">
+			<ul class="main-menu">
+				<li><a href="https://tridnguyen.com"><i class="fa fa-home"></i>Home</a></li>
+			</ul><!-- .main-menu -->
+		</nav><!-- .main-nav -->
+		<div class="about">
+			<img class="personal" alt="Tri wearing headphones focusing on work" title="Tri Nguyen" src="/images/at_upstatement.jpg"/>
+			<h1 class="site-title">Tri Nguyen</h1>
+			<h2 class="site-tagline">Strongly opinionated, but what do I know?</h2>
+		</div><!-- .about -->
+	</div><!-- .main-header -->
+	<section class="main-content">
+		<div class="post-single">
+			<h1>Git and GitHub: checked!</h1>
+			<div class="article-date">10-01-2012</div>
+<p>Today marks an important milestone in my developer career: I have successfully managed to get started with Git and Github, including creating my first repo and pushed changes to it.</p>
+<p>Here&#x2019;s a quick rundown of how I did it (references for my future self).</p>
+<p><span class="more"></span></p>
+<h2>1. Install git</h2>
+<p>I downloaded the <a href="http://git-scm.com/downloads">Git Mac installer</a> and run the install.<br />
+<strong>First challenge</strong>: Mac by default uses its own version of git, which is stored in <code>/usr/bin</code>, while the git installer install git in a different directory <code>/usr/local/bin/git/bin</code>.</p>
+<h4>Note</h4>
+<ul>
+<li>You can check out which version your Mac is using by typing this into Terminal <code>git --version</code> and <code>which git</code>.</li>
+</ul>
+<p>I couldn&#x2019;t really figure out how to change this to make it work. So what I ended up doing was delete the default <code>git</code> file by <code>rm /usr/bin/git</code> and create a symbolic link from the new git to the old git <code>ln -s /usr/local/bin/git/bin/git /usr/bin</code>.</p>
+<p>However, even without creating the symlink, Terminal will still search <code>/usr/local/</code> by default to find git.</p>
+<p>##2. Get started using git</p>
+<p>I used <a href="http://css-tricks.com/video-screencasts/101-lets-suck-at-github-together/">Chris Coyier&#x2019;s screencast tutorial</a> on how to get started using Git by cloning a local project, created a new repo on github.com and upload the local project to the remote repo.</p>
+<p>##3. Deploying from git</p>
+<p>The first git repo I created was a website project I&#x2019;ve been developing locally. I wanted to use git so that other people could start helping me work on it.<br />
+The natural next step for me was to figure out how I could deploy my git commits to a remote server through FTP.<br />
+My first thought was using a git hook <code>post-receive</code>, but it seemed awfully complex and difficult.</p>
+<p><a href="https://github.com/scttnlsn/dandelion">Dandelion</a> is a much nicer and easier tool to use to deploy. I followed the guide to install it on my Mac and created the config file for each git repo.</p>
+<h4>Note:</h4>
+<ul>
+<li>Use <code>sudo gem install dandelion</code>, and not just <code>gem install dandelion</code></li>
+<li>For the <code>exclude</code> files in config, there should be no tab before the dash &#x2013; character or it won&#x2019;t work.</li>
+<li>The first deployment might take a while, depending on the size of your repository. But after that, Dandelion is smart enough to only deploy the files that have been added/ changed/ deleted, so it is really quick.</li>
+</ul>
+<h2>4. Workflow</h2>
+<p>Now, my new work flow includes:</p>
+<ol>
+<li>Making changes to my working directory</li>
+<li><code>git commit -m &apos;commit message&apos;</code></li>
+<li><code>git push origin master</code></li>
+<li><code>dandelion deploy</code></li>
+</ol>
+<p>While it is true that I can&#x2019;t use automatic deployment with dandelion, I actually prefer to deploy manually like this. I think this would come in handy if I realized that I had made a mistake after a push, I could still go back and make changes before deploying it to my web server.</p>
+<p>Another advantage to using this method is that I am deploying from my local git repo. This means that I could push certain files to the server without having them included in the public repo.</p>
+<h3>Resources:</h3>
+<ul>
+<li><a href="https://plus.google.com/103751101313992876152/posts/XRT3CsuwBTo">A great collection of resources by Brad Frost on Git/Github</a></li>
+</ul>
+
+					<div id="disqus_thread"></div>
+					<script type="text/javascript">
+						/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+						var disqus_shortname = 'tridnguyen'; // required: replace example with your forum shortname
+				
+						/* * * DON'T EDIT BELOW THIS LINE * * */
+						(function() {
+							var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+							dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+							(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+						})();
+					</script>
+					<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+					<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+		</div>
+	</section><!-- .main-content -->
+		<footer class="main-footer">
+			<div class="social-networks">
+				<div class="twitter link">
+					<a href="https://twitter.com/tridnguyen" rel="me"><i class="fa fa-twitter"></i></a>
+				</div>
+				<div class="github link">
+					<a href="https://github.com/tnguyen14" rel="me"><i class="fa fa-github"></i></a>
+				</div>
+				<div class="linkedin link">
+					<a href="https://linkedin.com/in/triduynguyen" rel="me"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+			Built by Tri Nguyen using <a href="https://github.com/tnguyen14/tobiko">tobiko</a>. Copyrights ® 2025.
+		</footer>
+		<script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="/lib/bxslider/jquery.bxSlider.min.js"></script>
+		<script type="text/javascript" src="/lib/prism/prism.js"></script>
+		<script type="text/javascript">
+			var page = {
+				env: ""
+			};
+		</script>
+		<script type="text/javascript" src="/js/app.js"></script>
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			
+			  ga('create', 'UA-26482928-1', 'tridnguyen.com');
+			  ga('send', 'pageview');
+			
+			</script>	</body>
+</html>

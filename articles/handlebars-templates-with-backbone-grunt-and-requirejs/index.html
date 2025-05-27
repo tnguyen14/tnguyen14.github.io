@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript">
+		WebFontConfig = {
+			google: { families: [ 'Source+Code+Pro::latin', 'Source+Sans+Pro:400,400italic:latin', 'Merriweather:400,700:latin' ] }
+		};
+		(function() {
+			var wf = document.createElement('script');
+			wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+				'://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+			wf.type = 'text/javascript';
+			wf.async = 'true';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(wf, s);
+		})();
+	</script>
+	<title>Handlebars templates with Backbone, grunt.js and RequireJS | Tri Nguyen</title>
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+	<div class="main-header">
+		<nav class="main-nav" role="navigation">
+			<ul class="main-menu">
+				<li><a href="https://tridnguyen.com"><i class="fa fa-home"></i>Home</a></li>
+			</ul><!-- .main-menu -->
+		</nav><!-- .main-nav -->
+		<div class="about">
+			<img class="personal" alt="Tri wearing headphones focusing on work" title="Tri Nguyen" src="/images/at_upstatement.jpg"/>
+			<h1 class="site-title">Tri Nguyen</h1>
+			<h2 class="site-tagline">Strongly opinionated, but what do I know?</h2>
+		</div><!-- .about -->
+	</div><!-- .main-header -->
+	<section class="main-content">
+		<div class="post-single">
+			<h1>Handlebars templates with Backbone, grunt.js and RequireJS</h1>
+			<div class="article-date">03-31-2014</div>
+<p>Integrating Handlebars templates in modern web development workflow has been crucial in helping me organize my code neatly and maintain sanity. I want to achieve a few things:</p>
+<ul>
+<li>avoid the <code>&lt;script&gt;</code> tags to take advantage of syntax highlighting,</li>
+<li>break large templates into smaller files that can be managed and reused (componentized),</li>
+<li>automatically compiles and ready for use, and</li>
+<li>namespaced with file names as template names.</li>
+</ul>
+<p>In a current Backbone.js application at work, which is set up with <a href="gruntjs.com">grunt</a> and <a href="requirejs.org">RequireJS</a> (you can find a similar set up with the default <a href="https://github.com/yeoman/generator-backbone/">yeoman backbone generator</a>), I have found the following set up to meet most of these goals.</p>
+<p>I can use the templates with RequireJS in the views like so:</p>
+<pre><code class="language-javascript">// viewOne.js
+			
+			// I use commonjs syntax with require
+			// http://requirejs.org/docs/whyamd.html#sugar
+			var Templates = require(&apos;templates&apos;);
+			var viewTemplate = Templates.viewOne;
+			var html = viewTemplate({data: &apos;test&apos;});
+			</code></pre>
+<p>The template directories look something like this</p>
+<pre><code class="language-bash">app/templates/
+			&#x251C;&#x2500;&#x2500; viewOne.hbs
+			&#x251C;&#x2500;&#x2500; viewTwo.hbs
+			&#x251C;&#x2500;&#x2500; viewThree.hbs
+			&#x251C;&#x2500;&#x2500; ...
+			&#x2514;&#x2500;&#x2500; viewTwentyThree.hbs
+			
+			0 directories, 23 files
+			</code></pre>
+<p>I use <a href="https://github.com/gruntjs/grunt-contrib-handlebars"><code>grunt-contrib-handlebars</code></a> to compile the templates. Here&#x2019;s the Gruntfile.js config for local development:</p>
+<pre><code class="language-javascript">handlebars: {
+			    compile: {
+			        options: {
+			            amd: true,
+			            namespace: &apos;Templates&apos;,
+			            partialsUseNamespace: true,
+			            processName: function(filePath) {
+			                var file = filePath.replace(/.*/(w+).hbs/, &apos;$1&apos;);
+			                return file;
+			            }
+			        },
+			        files:{
+			            &apos;.tmp/scripts/templates.js&apos;: [&apos;&lt;%= yeoman.app %&gt;/templates/*.hbs&apos;]
+			        }
+			    }
+			}
+			</code></pre>
+<p>The above code does a few things. More detailed explanation of what each <code>options</code> does can be found on the plugin github page.</p>
+<ul>
+<li>The <code>processName</code> function takes the files and use their name as the template name.</li>
+<li>With <code>partialsUseNamespace</code> turned on, you can use partials both within your template as <code>&gt; partial</code> or through the global <code>Templates</code> object.</li>
+</ul>
+<p>In the build step for deployment, instead of just outputing the compiled templates into the <code>.tmp</code> folder, RequireJS can put Templates in the optimized javascript with the following Grunt task config (note the <code>paths</code> option):</p>
+<pre><code class="language-javascript">requirejs: {
+			    dist: {
+			        options: {
+			            baseUrl: &apos;&lt;%= yeoman.app %&gt;/scripts&apos;,
+			            optimize: &apos;none&apos;,
+			            paths: {
+			                &apos;templates&apos;: &apos;../../.tmp/scripts/templates&apos;
+			            }
+			        }
+			    }
+			}
+			</code></pre>
+<p>This simple set up has allowed me to rapidly develop a complex apps by breaking down complex templates into small reusuable components and use them liberally anywhere with RequireJS, yet keep the built JavaScript minimal and compressed. I hope it will be useful for others who might be looking for a similar solution. If you find this useful or would like to suggest an improvement, please leave a comment.</p>
+
+					<div id="disqus_thread"></div>
+					<script type="text/javascript">
+						/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+						var disqus_shortname = 'tridnguyen'; // required: replace example with your forum shortname
+				
+						/* * * DON'T EDIT BELOW THIS LINE * * */
+						(function() {
+							var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+							dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+							(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+						})();
+					</script>
+					<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+					<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+		</div>
+	</section><!-- .main-content -->
+		<footer class="main-footer">
+			<div class="social-networks">
+				<div class="twitter link">
+					<a href="https://twitter.com/tridnguyen" rel="me"><i class="fa fa-twitter"></i></a>
+				</div>
+				<div class="github link">
+					<a href="https://github.com/tnguyen14" rel="me"><i class="fa fa-github"></i></a>
+				</div>
+				<div class="linkedin link">
+					<a href="https://linkedin.com/in/triduynguyen" rel="me"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+			Built by Tri Nguyen using <a href="https://github.com/tnguyen14/tobiko">tobiko</a>. Copyrights ® 2025.
+		</footer>
+		<script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="/lib/bxslider/jquery.bxSlider.min.js"></script>
+		<script type="text/javascript" src="/lib/prism/prism.js"></script>
+		<script type="text/javascript">
+			var page = {
+				env: ""
+			};
+		</script>
+		<script type="text/javascript" src="/js/app.js"></script>
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			
+			  ga('create', 'UA-26482928-1', 'tridnguyen.com');
+			  ga('send', 'pageview');
+			
+			</script>	</body>
+</html>

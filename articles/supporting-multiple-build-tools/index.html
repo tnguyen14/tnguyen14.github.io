@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript">
+		WebFontConfig = {
+			google: { families: [ 'Source+Code+Pro::latin', 'Source+Sans+Pro:400,400italic:latin', 'Merriweather:400,700:latin' ] }
+		};
+		(function() {
+			var wf = document.createElement('script');
+			wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+				'://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+			wf.type = 'text/javascript';
+			wf.async = 'true';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(wf, s);
+		})();
+	</script>
+	<title>Supporting multiple build tools | Tri Nguyen</title>
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+	<div class="main-header">
+		<nav class="main-nav" role="navigation">
+			<ul class="main-menu">
+				<li><a href="https://tridnguyen.com"><i class="fa fa-home"></i>Home</a></li>
+			</ul><!-- .main-menu -->
+		</nav><!-- .main-nav -->
+		<div class="about">
+			<img class="personal" alt="Tri wearing headphones focusing on work" title="Tri Nguyen" src="/images/at_upstatement.jpg"/>
+			<h1 class="site-title">Tri Nguyen</h1>
+			<h2 class="site-tagline">Strongly opinionated, but what do I know?</h2>
+		</div><!-- .about -->
+	</div><!-- .main-header -->
+	<section class="main-content">
+		<div class="post-single">
+			<h1>Supporting multiple build tools</h1>
+			<div class="article-date">06-03-2015</div>
+<p>At Demandware, I work on a reference application &#x2013; sort of like a starting point for developers to use in building a&#xA0;e-commerce web application. Its purpose is to cut down on implementation time. One of the demands for this project is to create something that can be used and liked many developers with varied backgrounds, experiences and opinions.</p>
+<p>When I decided to introduce a much needed modern build tool into the project (for things like compiling Sass to CSS, bundling browserify modules, running tests etc.), I was met with a choice of whether to use grunt or gulp.</p>
+<p>While grunt has grown to be quite popular among many developers (the ones at my company included), there are limits to its approach that make it clunky to work with (a declarative API in defining tasks, different tasks interact with each other through the file system). Gulp has gained quite a bit of popularity due to its approach of using stream and a programmatic API. Admittedly, gulp is a lot more fun for me to use and maintain.</p>
+<p>However, this was not a straightforward choice as many people were voicing concern against going after the &#x201C;latest and greatest&#x201D; tool, and wanting to keep the technology stack consistent within the enterprise. While this is not an argument I agree with, I could appreciate and respect the intention.</p>
+<p>Instead of plunging into a heated debate with other engineers over what is a better build tool, I decided to support both for the project. In retrospect, this decision has turned out to be a wise one.</p>
+<p>It makes the idea of introducing a build tool that much easier to sell. I have the ability&#xA0;of pitch it by saying something like &#x201C;you can use either gulp or grunt, and they both would work the same&#x201D;. It appeals to three groups &#x2013; the ones who have spent time and effort learning grunt and feel comfortable in it, the ones who keep more up to date with&#xA0;bleeding edge, and also the ones who do not know either but want to learn/ use one.</p>
+<p>Furthermore, it sets the expectation that while a build tool is needed and important in modern web development, the project is not tied to a single tool. This opens up room for experimentation with new workflow and tooling options. If a new tool is available, it should be adopted and played with, regardless of whether it is a grunt or gulp tool. This also means that a completely new build tool can be experimented with as well, be it broccoli, npm run-scripts, or (gasp!) even make. We promise that the interface and tasks should be <strong>eventually</strong> consistent across these build tools, but they do not have to be on parity at any single time. We do try however to make&#xA0;the most basic tasks such as Sass and browserify to&#xA0;be available across all build tools.</p>
+<p>While this setup makes a lot of sense for our project, it might not be as practical or wise for others, especially those that are used/ maintained by a small group of people whose preferences/ opinions are more closely aligned. Having said that, I find it quite liberating and welcoming to newcomers to a project to have different build tools available. It is sort of like a quiet nod to all the three groups I mentioned above, making sure that none of them feels particularly left out. I have come to strongly believe that in order to make a project successful, it is usually helpful to make contributors, especially newcomers, feel welcomed and comfortable.</p>
+
+					<div id="disqus_thread"></div>
+					<script type="text/javascript">
+						/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+						var disqus_shortname = 'tridnguyen'; // required: replace example with your forum shortname
+				
+						/* * * DON'T EDIT BELOW THIS LINE * * */
+						(function() {
+							var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+							dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+							(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+						})();
+					</script>
+					<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+					<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+		</div>
+	</section><!-- .main-content -->
+		<footer class="main-footer">
+			<div class="social-networks">
+				<div class="twitter link">
+					<a href="https://twitter.com/tridnguyen" rel="me"><i class="fa fa-twitter"></i></a>
+				</div>
+				<div class="github link">
+					<a href="https://github.com/tnguyen14" rel="me"><i class="fa fa-github"></i></a>
+				</div>
+				<div class="linkedin link">
+					<a href="https://linkedin.com/in/triduynguyen" rel="me"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+			Built by Tri Nguyen using <a href="https://github.com/tnguyen14/tobiko">tobiko</a>. Copyrights ® 2025.
+		</footer>
+		<script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="/lib/bxslider/jquery.bxSlider.min.js"></script>
+		<script type="text/javascript" src="/lib/prism/prism.js"></script>
+		<script type="text/javascript">
+			var page = {
+				env: ""
+			};
+		</script>
+		<script type="text/javascript" src="/js/app.js"></script>
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			
+			  ga('create', 'UA-26482928-1', 'tridnguyen.com');
+			  ga('send', 'pageview');
+			
+			</script>	</body>
+</html>
